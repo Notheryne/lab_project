@@ -64,7 +64,6 @@ class Database:
             ShowQuery(create_command)
         self.cursor.execute(create_command)
 
-
     def show_tables(self, table_name='', all=False, show_query=False, sq=False):
         # TODO single table viewing
         show_command = 'SHOW TABLES;'
@@ -79,7 +78,7 @@ class Database:
         return cursor.execute(command)
 
 
-db = Database(use_database='testdb', password='Ap069RoX')
+db = Database(use_database='testdb', password='#####')
 db.create_table('test2', x='int', y='int', sq=True)
 db.show_tables()
 print(db)
