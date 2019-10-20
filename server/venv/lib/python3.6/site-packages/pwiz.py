@@ -173,7 +173,7 @@ def get_option_parser():
        help=('Only generate the specified tables. Multiple table names should '
              'be separated by commas.'))
     ao('-v', '--views', dest='views', action='store_true',
-       help='Generate model classes for VIEWs in addition to tables.')
+       help='Generate workbench_model classes for VIEWs in addition to tables.')
     ao('-i', '--info', dest='info', action='store_true',
        help=('Add database information and other metadata to top of the '
              'generated file.'))
