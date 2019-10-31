@@ -1,0 +1,94 @@
+body {
+    background-color: lightgray;
+}
+
+button + button {
+    margin-left: 10px;
+}
+
+#top-nav-bar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: whitesmoke;
+    border-bottom: 1px solid gray;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 28px;
+    line-height: 28px;
+}
+
+#top-nav-bar-right {
+    float: right;
+    padding: 0;
+}
+
+#login-btn {
+    padding: 1px 5px;
+    display: inline;
+    font-size: 14px;
+    text-align-all: center;
+    color: #425af5;
+    vertical-align: middle;
+    position: center;
+    background-color: whitesmoke;
+    border-radius: 1.2em;
+    border-width: 1px;
+    border-color: #425af5;
+}
+
+#register-btn {
+    padding: 1px 5px;
+    display: inline;
+    font-size: 14px;
+    text-align-all: center;
+    color: whitesmoke;
+    vertical-align: middle;
+    position: center;
+    background-color: #425af5;
+    border-style: solid;
+    border-radius: 1.2em;
+    border-width: 1px;
+    border-color: #425af5;
+}
+
+#source-code-btn {
+    padding: 0px 5px;
+    display: inline;
+    font-size: 14px;
+    text-align: center;
+    position: center;
+    vertical-align: middle;
+    border: none;
+    background-color: inherit;
+}
+
+#logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    height: 160px;
+
+}
+
+#login {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    height: 360px;
+    width: 600px;
+}
+
+fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+

@@ -7,7 +7,7 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
-    id = db.Column('user_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     email = db.Column('email', db.String(60), unique=True, nullable=False)
     name = db.Column('user_name', db.String(35), unique=True, nullable=False)
     password_hash = db.Column('password_hash', db.String(128))
@@ -26,7 +26,7 @@ class User(db.Model):
 
 
 class Character(db.Model):
-    id = db.Column('char_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     char_name = db.Column('char_name', db.String(45), unique=True, nullable=False)
 
     health = db.Column('health', db.Integer, nullable=False)
@@ -36,15 +36,15 @@ class Character(db.Model):
     intelligence = db.Column('intelligence', db.Integer, nullable=False)
     will = db.Column('will', db.Integer, nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), unique=True, nullable=False)
-    user = db.relationship('user', backref='character', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    itemsingame = db.relationship('itemsingame', backref='character', lazy=True)
 
-    image_path = db.Column('img_path', db.String(128))
+    image_path = db.Column('img_path', db.String(128), nullable=False)
 
 
-class Blueprints(db.Model):
-    bp_id = db.Column('bp_id', db.Integer, primary_key=True)
-    bp_type = db.Column(db.Integer, nullable=False)
+class Blueprint(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)
+    type = db.Column(db.Integer, nullable=False)
 
     health = db.Column('health', db.Integer, nullable=False)
     strength = db.Column('strength', db.Integer, nullable=False)
@@ -56,20 +56,21 @@ class Blueprints(db.Model):
     min_dmg = db.Column('min_dmg', db.Integer, nullable=False)
     max_dmg = db.Column('max_dmg', db.Integer, nullable=False)
 
-    image_path = db.Column('img_path', db.String(128))
+    image_path = db.Column('img_path', db.String(128), nullable=False)
+    items_in_game = db.relationship('itemsingame', backref='blueprint')
 
 
 class ItemsInGame(db.Model):
-    iig_id = db.Column('iig_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     slot = db.Column('slot', db.Integer, nullable=False)
     name = db.Column('iig_name', db.String(35), nullable=False)
     equipped = db.Column('equipped', db.Boolean)
-    blueprint_id = db.Column('bp_placeholder', db.Integer())
-    character_id = db.Column('char_placeholder', db.Integer())
+    blueprint_id = db.Column('bp_id', db.Integer, db.ForeignKey('blueprint.id'))
+    character_id = db.Column('char_id', db.Integer, db.ForeignKey('character.id'))
 
 
 class Enemy(db.Model):
-    enemy_id = db.Column('enemy_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('enemy_name', db.String(35), unique=True, nullable=False)
     rarity = db.Column(db.Integer, nullable=False)
     health = db.Column(db.Integer, nullable=False)
@@ -83,14 +84,15 @@ class Enemy(db.Model):
     min_dmg = db.Column(db.Integer, nullable=False)
     max_dmg = db.Column(db.Integer, nullable=False)
 
-    image_path = db.Column(db.String(128))
+    image_path = db.Column('img_path', db.String(128), nullable=False)
 
 
 class NonPersonCharacter(db.Model):
-    npc_id = db.Column('npc_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('npc_name', db.String(35), unique=True, nullable=False)
     healer = db.Column(db.Boolean)
     trader = db.Column(db.Boolean)
     text1 = db.Column(db.Text)
     text2 = db.Column(db.Text)
     text3 = db.Column(db.Text)
+    image_path = db.Column('img_path', db.String(128), nullable=False)
