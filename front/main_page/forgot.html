@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{game_title}} - password recovery</title>
+    <link rel="stylesheet" type="text/css" href="styles/forgot.css">
+    <link href='https://fonts.googleapis.com/css?family=Amatic SC' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Balthazar' rel='stylesheet'>
+</head>
+<body>
+    <span id="top-nav-bar">
+        <button type="button" id="source-code-btn"
+                onclick="location.href='https://github.com/Notheryne/lab_project';">Source</button>
+        <span id="top-nav-bar-right">
+            <button type="button" class="top-btn login" onclick="location.reload();"> Login </button>
+            <button type="button" class="top-btn register"
+                    onclick="location.href='register.html'"> Sign Up </button>
+        </span>
+    </span>
+    <img src="media/logo.svg" id="logo" alt="{{game_title}} - game logo"/>
+
+    <div id="login-outline">
+      <form id="login-form" action="http://127.0.0.1/forgot" method="post">
+        <span class="login-text">WELCOME BACK</span>
+        <span class="circle-padlock no-select">&#x1F512;</span>
+        <div id="inputs">
+
+          <label for="username">Username</label>
+          <input type="text" name="username" spellcheck=false required>
+
+          <label for="email">Email</label>
+          <input type="email" name="email" spellcheck=false required>
+
+          <button type="submit" class="login-btn login">Send a mail!</button>
+        </div>
+      </form>
+      <button type="button" class="login-btn"
+            onclick="location.href='index.html'"> Login instead </button>
+    </div>
+
+
+</body>
+</html>
