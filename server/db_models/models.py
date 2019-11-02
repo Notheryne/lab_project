@@ -2,18 +2,19 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     email = db.Column('email', db.String(60), unique=True, nullable=False)
     name = db.Column('user_name', db.String(35), unique=True, nullable=False)
     password_hash = db.Column('password_hash', db.String(128))
     create_date = db.Column('create_date', db.DateTime, default=datetime.now())
 
-    character = db.relationship('character', backref='user', lazy=True)
+    character = db.relationship('Character', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -37,7 +38,7 @@ class Character(db.Model):
     will = db.Column('will', db.Integer, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
-    itemsingame = db.relationship('itemsingame', backref='character', lazy=True)
+    itemsingame = db.relationship('ItemsInGame', backref='character', lazy=True)
 
     image_path = db.Column('img_path', db.String(128), nullable=False)
 
@@ -57,7 +58,7 @@ class Blueprint(db.Model):
     max_dmg = db.Column('max_dmg', db.Integer, nullable=False)
 
     image_path = db.Column('img_path', db.String(128), nullable=False)
-    items_in_game = db.relationship('itemsingame', backref='blueprint')
+    items_in_game = db.relationship('ItemsInGame', backref='blueprint')
 
 
 class ItemsInGame(db.Model):

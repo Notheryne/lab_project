@@ -76,15 +76,6 @@ button + button {
     border: 1px solid black;
 }
 
-/* #login {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-    height: 360px;
-    width: 600px;
-} */
-
 #login-outline {
     margin: auto;
     background-color: var(--bg-color);
@@ -178,4 +169,5 @@ button + button {
   font-size: 100%;
   border: none;
   background-color: inherit;
+    cursor: pointer;
 }

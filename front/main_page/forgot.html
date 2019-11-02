@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{{game_title}} - password recovery</title>
     <link rel="stylesheet" type="text/css" href="styles/forgot.css">
-    <link href='https://fonts.googleapis.com/css?family=Amatic SC' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Amatic%20SC' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Balthazar' rel='stylesheet'>
 </head>
 <body>
@@ -12,7 +12,7 @@
         <button type="button" id="source-code-btn"
                 onclick="location.href='https://github.com/Notheryne/lab_project';">Source</button>
         <span id="top-nav-bar-right">
-            <button type="button" class="top-btn login" onclick="location.reload();"> Login </button>
+            <button type="button" class="top-btn login" onclick="location.href='index.html';"> Login </button>
             <button type="button" class="top-btn register"
                     onclick="location.href='register.html'"> Sign Up </button>
         </span>
@@ -26,10 +26,10 @@
         <div id="inputs">
 
           <label for="username">Username</label>
-          <input type="text" name="username" spellcheck=false required>
+          <input type="text" id="username" name="username" spellcheck=false required>
 
           <label for="email">Email</label>
-          <input type="email" name="email" spellcheck=false required>
+          <input type="email" id="email" name="email" spellcheck=false required>
 
           <button type="submit" class="login-btn login">Send a mail!</button>
         </div>
