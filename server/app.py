@@ -12,14 +12,18 @@ CORS(app)
 login = LoginManager(app)
 with app.app_context():
     db.init_app(app)
-    # db.drop_all(app=app)
-    # db.create_all(app=app)
+    db.drop_all(app=app)
+    db.create_all(app=app)
 
-    # u = User(name='Nothy', email='nothy@nothy.com')
-    # u.set_password('123456')
-    # db.session.add(u)
-    # db.session.commit()
-
+    u = User(name='Nothy', email='nothy@nothy.com')
+    u.set_password('123456')
+    db.session.add(u)
+    db.session.commit()
+    c = Character(char_name="Nothy", health=20, strength=20, reflex=20,
+                  charisma=20, intelligence=20, will=20, user_id=1,
+                  image_path='https://upload.wikimedia.org/wikipedia/en/thumb/6/63/IMG_%28business%29.svg/1200px-IMG_%28business%29.svg.png')
+    db.session.add(c)
+    db.session.commit()
 
 @login.user_loader
 def load_user(user_id):
@@ -34,6 +38,14 @@ def login():
         'success': True,
         'goto_url': 'http://127.0.0.1:5000/login',
     }
+    return jsonify(data)
+
+
+@app.route ('/character/<char_id>', methods=['GET'])
+def get_character(char_id):
+    data = Character.query.get(int(char_id)).__dict__
+    del data['_sa_instance_state']
+    print(jsonify(data))
     return jsonify(data)
 
 

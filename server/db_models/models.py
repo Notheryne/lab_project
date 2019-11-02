@@ -42,6 +42,13 @@ class Character(db.Model):
 
     image_path = db.Column('img_path', db.String(128), nullable=False)
 
+    def __repr__(self):
+        return 'id: {}, char_name: {}, health: {}, strength: {}, reflex: {}, ' \
+               'charisma: {}, intelligence: {}, will: {}, user_id: {}, itemsingame: {}, image_path:{}'.format(
+            self.id, self.char_name, self.health, self.strength, self.reflex, self.charisma,
+            self.intelligence, self.will, self.user_id, self.itemsingame, self.image_path
+        )
+
 
 class Blueprint(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
