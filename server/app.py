@@ -45,7 +45,7 @@ def login():
 def get_character(char_id):
     data = Character.query.get(int(char_id)).__dict__
     del data['_sa_instance_state']
-    print(jsonify(data))
+    print(data)
     return jsonify(data)
 
 
