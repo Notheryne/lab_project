@@ -34,10 +34,11 @@
 <script>
 export default {
   name: "Menu",
-  data() {
-      return {
-      };
-  },
+    // data() {
+    //   return {
+    //       active_btn: 'char',
+    //   };
+    // }
 }
 </script>
 

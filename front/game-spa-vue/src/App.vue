@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <header>
-      <Menu />
+      <Menu/>
     </header>
+    <div id="content">
+      <Character/>
+    </div>
 <!--    <div id="content">-->
 <!--    <main>-->
 <!--      <div class="content">-->
@@ -19,16 +22,19 @@
 <script>
 import axios from 'axios'
 import Menu from './components/Menu.vue'
+import Character from './components/Character.vue'
 
 export default {
   name: 'app',
   components: {
     Menu,
+    Character,
   },
   data () {
     return {
         data: null,
         endpoint: 'http://127.0.0.1:5000/character/1',
+        active_btn: 'char',
     }
   },
   created() {
@@ -53,8 +59,20 @@ export default {
     background-color: #3A7765;
   }
 
+  #app {
+    clear: both;
+  }
+
   header {
     display: block;
+  }
+
+  main {
+    display: block;
+    position: absolute;
+    top: 15%;
+    border: 1px solid black;
+
   }
 
 

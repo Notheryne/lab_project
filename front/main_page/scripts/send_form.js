@@ -8,3 +8,36 @@ function getFormData($form){
 
     return indexed_array;
 }
+
+function SendFormRegister() {
+    var data = getFormData($("#login-form"));
+    console.log(data);
+    $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:5000/api/users',
+        datatype: 'json',
+        crossDomain: true,
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(msg) {
+            location.href = msg['goto'];
+        }
+    })
+}
+
+function SendFormLogin() {
+    var data = getFormData($("#login-form"));
+    console.log(data);
+    $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:5000/api/users',
+        datatype: 'json',
+        data: JSON.stringify(data),
+        crossDomain: true,
+        contentType: 'application/json',
+        success: function(msg) {
+            location.href = this.url;
+        }
+    })
+}
+
