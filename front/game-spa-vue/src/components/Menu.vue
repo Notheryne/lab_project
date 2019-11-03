@@ -1,47 +1,94 @@
 <template>
   <div id="menu-wrapper">
-    <div id="topbar">
-      <div id="logo">
-        <img src="../assets/logo.svg" id="logo-img" alt="Game logo on the top">
-      </div>
-      <div id="nav-bar">
-        <button type="button">Character</button>
-      </div>
+    <router-link class="link" :to="{ name: 'app' }">
+    <div id="logo">
+      <img src="../assets/logo.svg" alt="Game logo image">
+    </div>
+      </router-link>
+    <div id="top-nav">
+      <router-link class="link" :to="{ name: 'character' }">
+      <button>Character</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'expedition'}">
+        <button>Expedition</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'arena'}">
+        <button>Arena</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'healer'}">
+        <button>Healer</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'trader'}">
+        <button>Trader</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'manage'}">
+        <button>Manage</button>
+      </router-link>
+      <router-link class="link" :to="{ name: 'logout'}">
+        <button>Logout</button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-
+  name: "Menu",
+  data() {
+      return {
+      };
+  },
 }
-
 </script>
 
 <style scoped>
-  #logo {
-    position: fixed;
-    margin-left: 5%;
-    width: 90%;
-    height: 15%;
-    border: 1px solid black;
+  #menu-wrapper {
+    position: absolute;
+    top: 0;
     display: block;
+    width: 90%;
+    margin-left: 5%;
+    border: 1px solid black;
+    height: 15%;
+    clear: both;
+  }
+
+  #logo {
+    height: 75%;
+    width: 100%;
+    /*border: 1px solid white;*/
   }
 
   #logo img {
-    float: top;
+    height: 100%;
     width: 100%;
-    height: 80%;
-    object-fit: contain;
-    border: 1px solid red;
   }
 
-  #nav-bar {
-    width: 90%;
-    height: 20%;
-    margin-left: 5%;
-    border: 1px solid green;
+  #top-nav {
+    background: #333;
+    width: 100%;
+    height: 25%;
+    text-align: right;
+  }
 
+  #top-nav button {
+    text-align: center;
+    width: 12%;
+    height: 100%;
+    color: #ddd;
+    background: inherit;
+    border: none;
+    font-size: 140%;
+  }
+
+  #top-nav button:hover {
+    background-color: #ddd;
+    color: inherit;
+  }
+
+  .link {
+    color: inherit;
+    outline: none;
   }
 
 </style>

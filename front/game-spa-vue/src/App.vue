@@ -48,27 +48,14 @@ export default {
 }
 </script>
 
-<style scoped>
-  #app {
-    position: fixed;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #A5D6D9;
+<style>
+  body {
+    background-color: #3A7765;
   }
 
-  /*header {*/
-  /*  float: top;*/
-  /*  overflow: hidden;*/
-  /*}*/
+  header {
+    display: block;
+  }
 
-  /*#content {*/
-  /*  clear: both;*/
-  /*  width: 90%;*/
-  /*  margin: 5% auto;*/
-  /*  border: 1px solid black;*/
-  /*}*/
+
 </style>
