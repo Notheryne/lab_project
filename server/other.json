@@ -1,0 +1,61 @@
+['db_init':
+    # u = User(name='Nothy', email='nothy@nothy.com', password='123456')
+    # db.session.add(u)
+    # db.session.commit()
+    # c = Character(char_name="Nothy", health=20, strength=20, reflex=20,
+    #               charisma=20, intelligence=20, will=20, user_id=1,
+    #               image_path='https://upload.wikimedia.org/wikipedia/en/thumb/6/63/IMG_%28business%29.svg/1200px-IMG_%28business%29.svg.png')
+    # bp = Blueprint(type=0, health=20, strength=20, reflex=20,
+    #                charisma=20, intelligence=20, will=20, armor=0,
+    #                min_dmg=10, max_dmg=20,
+    #                image_path='https://upload.wikimedia.org/wikipedia/en/thumb/6/63/IMG_%28business%29.svg/1200px-IMG_%28business%29.svg.png')
+    # bp2 = Blueprint(type=1, health=20, strength=20, reflex=20,
+    #                 charisma=20, intelligence=20, will=20, armor=50,
+    #                 min_dmg=0, max_dmg=0,
+    #                 image_path='https://upload.wikimedia.org/wikipedia/en/thumb/6/63/IMG_%28business%29.svg/1200px-IMG_%28business%29.svg.png')
+    # iig = ItemsInGame(slot=0, name='Weapon 1', equipped=1, blueprint_id=1, character_id=1)
+    # iig2 = ItemsInGame(slot=1, name='Shield', equipped=1, blueprint_id=2, character_id=1)
+    #
+    # db.session.add(c)
+    # db.session.add(bp)
+    # db.session.add(bp2)
+    # db.session.add(iig)
+    # db.session.add(iig2)
+    # db.session.commit()
+  ]
+['get_char':
+  # @app.route('/character/<char_id>', methods=['GET'])
+# @auth.login_required
+# def get_character(char_id):
+#     data = Character.query.get(int(char_id)).__dict__
+#     del data['_sa_instance_state']
+#     print(data)
+#     return jsonify(data)
+]
+
+['calc_stats':
+  # @app.route('/cs/<char_name>', methods=['GET'])
+# def calculate_stats(char_name):
+#     """
+#
+#     :param char_name:
+#     :return:
+#     """
+#
+#     char = Character.query.filter_by(char_name=char_name).first()
+#     char_stats = char.to_dict_stats()
+#     items = char_stats.pop('items_in_game')
+#     items = [item.to_dict() for item in items]
+#     item_stats = []
+#     for item in items:
+#         if item['equipped']:
+#             stats = Blueprint.query.filter_by(id=item['bp_id']).first().to_dict_stats()
+#             item_stats.append(stats)
+#     for item in item_stats:
+#         for stat, value in item.items():
+#             if stat in char_stats.keys():
+#                 char_stats[stat] += value
+#             else:
+#                 char_stats[stat] = value
+#     return char_stats
+]

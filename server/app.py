@@ -1,62 +1,60 @@
 from flask import Flask, jsonify, request, redirect, g, make_response
-from server.db_models.models import *
 from flask_httpauth import HTTPBasicAuth
 from flask_cors import CORS, cross_origin
-import jwt
+from flask_restful import Api
+from flask_jwt_extended import JWTManager
+
+
+# DATABASE RELATED IMPORTS
+from server.db_models.db import db
+from server.db_models.defaults import default_blueprint_shield, default_blueprint_weapon
+
+from server.db_models.Blueprint import Blueprint
+from server.db_models.Character import Character
+from server.db_models.Enemy import Enemy
+from server.db_models.ItemsInGame import ItemsInGame
+from server.db_models.NonPersonCharacter import NonPersonCharacter
+from server.db_models.RevokedTokenModel import RevokedTokenModel
+# from server.db_models.User import User
+
+import server.resources as resources
 
 login_site_path = 'front/main_page/index.html'
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_ECHO'] = True
+api = Api(app)
+# app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://game_admin:#dmiN123@localhost/game'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+jwt = JWTManager(app)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 auth = HTTPBasicAuth()
 
-with app.app_context():
+
+@jwt.token_in_blacklist_loader
+def check_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return RevokedTokenModel.is_blacklisted(jti)
+
+
+@app.before_first_request
+def manage_db():
     db.init_app(app)
     db.drop_all(app=app)
     db.create_all(app=app)
-
-    u = User(name='Nothy', email='nothy@nothy.com', password='123456')
-    db.session.add(u)
-    db.session.commit()
-    c = Character(char_name="Nothy", health=20, strength=20, reflex=20,
-                  charisma=20, intelligence=20, will=20, user_id=1,
-                  image_path='https://upload.wikimedia.org/wikipedia/en/thumb/6/63/IMG_%28business%29.svg/1200px-IMG_%28business%29.svg.png')
-    db.session.add(c)
-    db.session.commit()
+    default_blueprint_weapon.save()
+    default_blueprint_shield.save()
 
 
-@app.route('/api/users', methods=['OPTIONS', 'GET', 'POST'])
-@cross_origin()
-def handle():
-    if request.method == "POST":
-        data = request.json
-        print(data)
-        response = {
-            'success': True,
-            'goto': 'index.html',
-        }
-        response = jsonify(response)
-        # response.headers.add("Access-Control-Allow-Origin", "*")
-        return response
-    elif request.method == "GET":
-        return 'Ok'
-
-
-
-@app.route ('/character/<char_id>', methods=['GET'])
-@auth.login_required
-def get_character(char_id):
-    data = Character.query.get(int(char_id)).__dict__
-    del data['_sa_instance_state']
-    print(data)
-    return jsonify(data)
-
+api.add_resource(resources.UserRegistration, '/r')
+api.add_resource(resources.UserLogin, '/l')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
