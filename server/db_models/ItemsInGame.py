@@ -3,7 +3,7 @@ from server.db_models.db import db
 
 class ItemsInGame(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
-    slot = db.Column('slot', db.Integer, nullable=False, unique=True)
+    slot = db.Column('slot', db.Integer, nullable=False)
     equipped = db.Column('equipped', db.Boolean)
     blueprint_id = db.Column('bp_id', db.Integer, db.ForeignKey('blueprint.id'))
     character_id = db.Column('char_id', db.Integer, db.ForeignKey('character.id'))
@@ -17,5 +17,5 @@ class ItemsInGame(db.Model):
             'char_id': self.character_id,
         }
 
-    def edit(self, char_id=0):
+    def edit(self, char_id=0, blueprint_id=0):
         self.character_id = char_id

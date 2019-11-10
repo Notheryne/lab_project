@@ -17,7 +17,9 @@ from server.db_models.NonPersonCharacter import NonPersonCharacter
 from server.db_models.RevokedTokenModel import RevokedTokenModel
 # from server.db_models.User import User
 
+# from server.func_resources import *
 import server.resources as resources
+
 
 login_site_path = 'front/main_page/index.html'
 
@@ -55,6 +57,6 @@ def manage_db():
 
 api.add_resource(resources.UserRegistration, '/r')
 api.add_resource(resources.UserLogin, '/l')
-
+api.add_resource(resources.CharacterFight, '/fight')
 if __name__ == '__main__':
     app.run()

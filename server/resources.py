@@ -7,6 +7,7 @@ from server.db_models.RevokedTokenModel import RevokedTokenModel
 from server.db_models.Character import Character
 from server.db_models.defaults import create_default_character
 
+from server.func_resources import *
 
 reg_parser = reqparse.RequestParser()
 reg_parser.add_argument('username', help='This field cannot be blank', required=True)
@@ -17,6 +18,11 @@ reg_parser.add_argument('email', help='This field cannot be blank', required=Tru
 log_parser = reqparse.RequestParser()
 log_parser.add_argument('username', help='This field cannot be blank', required=True)
 log_parser.add_argument('password', help='This field cannot be blank', required=True)
+
+fight_parser = reqparse.RequestParser()
+fight_parser.add_argument('attacker_id', help='This field cannot be blank', required=True)
+fight_parser.add_argument('defender_id', help='This field cannot be blank', required=True)
+
 
 class UserRegistration(Resource):
     def post(self):
@@ -43,8 +49,8 @@ class UserRegistration(Resource):
             user_id = new_user.save()
             create_default_character(char_name, user_id)
 
-            access_token = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
+            access_token = create_access_token(identity=user_id)
+            refresh_token = create_refresh_token(identity=user_id)
             return {
                 'message': 'User {} successfully created.'.format(username),
                 'access_token': access_token,
@@ -65,8 +71,9 @@ class UserLogin(Resource):
         if not current_user:
             return {'message': "User {} doesn't exist.".format(username)}
         if current_user.check_password(data['password']):
-            access_token = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
+            access_token = create_access_token(identity=current_user.id)
+            refresh_token = create_refresh_token(identity=current_user.id)
+            print(calculate_stats('Nothy'))
             return {
                 'success': True,
                 'message': 'Logged in successfully.',
@@ -102,3 +109,13 @@ class UserLogoutRefresh(Resource):
             return {'message': 'Refresh token has been revoked'}
         except:
             return {'message': 'Something went wrong'}, 500
+
+
+class CharacterFight(Resource):
+    @jwt_required
+    def post(self):
+        print(get_jwt_identity())
+        characters = fight_parser.parse_args()
+        return run_fight(int(characters['attacker_id']), int(characters['defender_id']))
+
+

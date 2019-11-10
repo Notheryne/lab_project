@@ -3,6 +3,7 @@ from server.db_models.ItemsInGame import ItemsInGame
 from server.db_models.Blueprint import Blueprint
 from server.db_models.db import db
 
+from copy import deepcopy
 default_blueprint_weapon = Blueprint(
     name='Wooden sword',
     type=0,
@@ -37,13 +38,13 @@ default_blueprint_shield = Blueprint(
 default_weapon = ItemsInGame(
     slot=0,
     equipped=True,
-    blueprint_id=default_blueprint_weapon.id,
+    blueprint_id=1,
 )
 
 default_shield = ItemsInGame(
     slot=1,
     equipped=True,
-    blueprint_id=default_blueprint_shield.id,
+    blueprint_id=2,
 )
 
 
@@ -59,14 +60,17 @@ default_char = Character(
 
 
 def create_default_character(char_name, user_id):
-    default_char.edit(char_name, user_id)
-    db.session.add(default_char)
+    new_default_char = deepcopy(default_char)
+    new_default_char.edit(char_name, user_id)
+    db.session.add(new_default_char)
     db.session.commit()
-    char_id = default_char.id
+    char_id = new_default_char.id
 
-    default_weapon.edit(char_id=char_id)
-    default_shield.edit(char_id=char_id)
-    db.session.add(default_weapon)
-    db.session.add(default_shield)
+    new_default_weapon = deepcopy(default_weapon)
+    new_default_shield = deepcopy(default_shield)
+    new_default_weapon.edit(char_id=char_id)
+    new_default_shield.edit(char_id=char_id)
+    db.session.add(new_default_weapon)
+    db.session.add(new_default_shield)
     db.session.commit()
 

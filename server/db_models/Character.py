@@ -54,6 +54,10 @@ class Character(db.Model):
     def find_character_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
 
-    def edit(self, char_name='', user_id=''):
-        self.name = char_name
-        self.user_id = user_id
+    def edit(self, char_name='', user_id='', health=0):
+        if char_name != '':
+            self.name = char_name
+        if user_id != '':
+            self.user_id = user_id
+        if health != 0:
+            self.health = health
