@@ -18,6 +18,23 @@ class Enemy(db.Model):
 
     image_path = db.Column('img_path', db.String(256), nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'rarity': self.rarity,
+            'health': self.health,
+            'strength': self.strength,
+            'reflex': self.reflex,
+            'charisma': self.charisma,
+            'intelligence': self.intelligence,
+            'will': self.will,
+            'armor': self.armor,
+            'min_dmg': self.min_dmg,
+            'max_dmg': self.max_dmg,
+            'image_path': self.image_path,
+        }
+
     def save(self):
         db.session.add(self)
         db.session.commit()

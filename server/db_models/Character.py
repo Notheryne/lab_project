@@ -5,6 +5,8 @@ class Character(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('char_name', db.String(45), unique=True, nullable=False)
 
+    level = db.Column('level', db.Integer, nullable=False)
+    experience = db.Column('experience', db.Integer, nullable=False)
     health = db.Column('health', db.Integer, nullable=False)
     strength = db.Column('strength', db.Integer, nullable=False)
     reflex = db.Column('reflex', db.Integer, nullable=False)
@@ -18,16 +20,19 @@ class Character(db.Model):
     image_path = db.Column('img_path', db.String(256), nullable=False)
 
     def __repr__(self):
-        return 'id: {}, char_name: {}, health: {}, strength: {}, reflex: {}, ' \
+        return 'id: {}, char_name: {}, level: {}, experience: {}, health: {}, strength: {}, reflex: {}, ' \
                'charisma: {}, intelligence: {}, will: {}, user_id: {}, itemsingame: {}, image_path:{}'.format(
-            self.id, self.char_name, self.health, self.strength, self.reflex, self.charisma,
-            self.intelligence, self.will, self.user_id, self.itemsingame, self.image_path
-        )
+                self.id, self.char_name, self.level, self.experience, self.health, self.strength, self.reflex,
+                self.charisma,
+                self.intelligence, self.will, self.user_id, self.itemsingame, self.image_path
+                )
 
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.char_name,
+            'name': self.name,
+            'level': self.level,
+            'experience': self.experience,
             'health': self.health,
             'strength': self.strength,
             'reflex': self.reflex,

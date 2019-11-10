@@ -51,6 +51,37 @@ def manage_db():
     db.init_app(app)
     db.drop_all(app=app)
     db.create_all(app=app)
+    enemy1 = Enemy(
+        name='Rat',
+        rarity=0,
+        health=100,
+        strength=1,
+        reflex=2,
+        charisma=2,
+        intelligence=1,
+        will=1,
+        armor=10,
+        min_dmg=1,
+        max_dmg=2,
+        image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
+    )
+
+    enemy2 = Enemy(
+        name='Other Rat',
+        rarity=0,
+        health=100,
+        strength=1,
+        reflex=2,
+        charisma=2,
+        intelligence=1,
+        will=1,
+        armor=10,
+        min_dmg=1,
+        max_dmg=2,
+        image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
+    )
+    enemy1.save()
+    enemy2.save()
     default_blueprint_weapon.save()
     default_blueprint_shield.save()
 
@@ -58,5 +89,8 @@ def manage_db():
 api.add_resource(resources.UserRegistration, '/r')
 api.add_resource(resources.UserLogin, '/l')
 api.add_resource(resources.CharacterFight, '/fight')
+api.add_resource(resources.Arena, '/arena')
+
+
 if __name__ == '__main__':
     app.run()

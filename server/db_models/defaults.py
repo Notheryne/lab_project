@@ -50,6 +50,8 @@ default_shield = ItemsInGame(
 
 default_char = Character(
     health=50,
+    level=1,
+    experience=0,
     strength=5,
     reflex=5,
     charisma=5,
