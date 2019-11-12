@@ -33,7 +33,7 @@ login_data = {
 
 token = requests.post(login, data=login_data).json()['access_token']
 
-fight = 'http://localhost:5000/fight'
+fight = 'http://localhost:5000/monster_fight'
 fight_data = {
     'attacker_id': 1,
     'defender_id': 2

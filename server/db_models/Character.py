@@ -7,6 +7,9 @@ class Character(db.Model):
 
     level = db.Column('level', db.Integer, nullable=False)
     experience = db.Column('experience', db.Integer, nullable=False)
+    gold = db.Column('money', db.Integer, nullable=False)
+
+    max_health = db.Column('max_health', db.Integer, nullable=False)
     health = db.Column('health', db.Integer, nullable=False)
     strength = db.Column('strength', db.Integer, nullable=False)
     reflex = db.Column('reflex', db.Integer, nullable=False)
@@ -19,20 +22,14 @@ class Character(db.Model):
 
     image_path = db.Column('img_path', db.String(256), nullable=False)
 
-    def __repr__(self):
-        return 'id: {}, char_name: {}, level: {}, experience: {}, health: {}, strength: {}, reflex: {}, ' \
-               'charisma: {}, intelligence: {}, will: {}, user_id: {}, itemsingame: {}, image_path:{}'.format(
-                self.id, self.char_name, self.level, self.experience, self.health, self.strength, self.reflex,
-                self.charisma,
-                self.intelligence, self.will, self.user_id, self.itemsingame, self.image_path
-                )
-
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'level': self.level,
             'experience': self.experience,
+            'gold': self.gold,
+            'max_health': self.max_health,
             'health': self.health,
             'strength': self.strength,
             'reflex': self.reflex,
@@ -46,6 +43,7 @@ class Character(db.Model):
 
     def to_dict_stats(self):
         return {
+            'max_health': self.max_health,
             'health': self.health,
             'strength': self.strength,
             'reflex': self.reflex,
@@ -56,13 +54,26 @@ class Character(db.Model):
         }
 
     @classmethod
-    def find_character_by_name(cls, name):
+    def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
 
-    def edit(self, char_name='', user_id='', health=0):
-        if char_name != '':
+    @classmethod
+    def find_by_id(cls, id, todict=False):
+        if todict:
+            return cls.query.filter_by(id=id).first().to_dict()
+        else:
+            return cls.query.filter_by(id=id).first()
+
+    def edit(self, char_name=None, user_id=None, health=None, level=None, experience=None, gold=None):
+        if char_name:
             self.name = char_name
-        if user_id != '':
+        if user_id:
             self.user_id = user_id
-        if health != 0:
+        if health:
             self.health = health
+        if level:
+            self.level = level
+        if experience:
+            self.experience = experience
+        if gold:
+            self.gold += gold

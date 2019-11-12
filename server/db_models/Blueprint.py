@@ -10,9 +10,11 @@ from server.db_models.db import db
 
 class Blueprint(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
-    type = db.Column(db.Integer, nullable=False)
+    slot = db.Column(db.Integer, nullable=False)
 
     name = db.Column('name', db.String(50), nullable=False)
+    price = db.Column('price', db.Integer, nullable=False)
+
     health = db.Column('health', db.Integer, nullable=False)
     strength = db.Column('strength', db.Integer, nullable=False)
     reflex = db.Column('reflex', db.Integer, nullable=False)
@@ -29,7 +31,8 @@ class Blueprint(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'type': self.type,
+            'slot': self.slot,
+            'price': self.price,
             'health': self.health,
             'strength': self.strength,
             'reflex': self.reflex,
@@ -55,6 +58,10 @@ class Blueprint(db.Model):
             'min_dmg': self.min_dmg,
             'max_dmg': self.max_dmg,
         }
+
+    @classmethod
+    def find_by_id(cls, bp_id):
+        return cls.query.filter_by(id=bp_id).first()
 
     def save(self):
         db.session.add(self)

@@ -53,7 +53,7 @@ def manage_db():
     db.create_all(app=app)
     enemy1 = Enemy(
         name='Rat',
-        rarity=0,
+        experience=1500,
         health=100,
         strength=1,
         reflex=2,
@@ -68,8 +68,8 @@ def manage_db():
 
     enemy2 = Enemy(
         name='Other Rat',
-        rarity=0,
-        health=100,
+        experience=1000,
+        health=50,
         strength=1,
         reflex=2,
         charisma=2,
@@ -77,9 +77,10 @@ def manage_db():
         will=1,
         armor=10,
         min_dmg=1,
-        max_dmg=2,
+        max_dmg=1,
         image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
     )
+
     enemy1.save()
     enemy2.save()
     default_blueprint_weapon.save()
@@ -88,8 +89,9 @@ def manage_db():
 
 api.add_resource(resources.UserRegistration, '/r')
 api.add_resource(resources.UserLogin, '/l')
-api.add_resource(resources.CharacterFight, '/fight')
-api.add_resource(resources.Arena, '/arena')
+api.add_resource(resources.CharacterFight, '/character_fight')
+api.add_resource(resources.MonsterFight, '/monster_fight')
+api.add_resource(resources.ArenaView, '/arena')
 
 
 if __name__ == '__main__':

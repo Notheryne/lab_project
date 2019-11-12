@@ -4,8 +4,11 @@ from server.db_models.Blueprint import Blueprint
 from server.db_models.db import db
 
 from copy import deepcopy
+
+
 default_blueprint_weapon = Blueprint(
     name='Wooden sword',
+    price=100,
     type=0,
     health=0,
     strength=0,
@@ -22,6 +25,7 @@ default_blueprint_weapon = Blueprint(
 default_blueprint_shield = Blueprint(
     name='Wooden shield',
     type=1,
+    price=100,
     health=0,
     strength=0,
     reflex=0,
@@ -49,6 +53,7 @@ default_shield = ItemsInGame(
 
 
 default_char = Character(
+    max_health=50,
     health=50,
     level=1,
     experience=0,
