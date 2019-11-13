@@ -9,7 +9,7 @@ from copy import deepcopy
 default_blueprint_weapon = Blueprint(
     name='Wooden sword',
     price=100,
-    type=0,
+    slot=0,
     health=0,
     strength=0,
     reflex=0,
@@ -24,7 +24,7 @@ default_blueprint_weapon = Blueprint(
 
 default_blueprint_shield = Blueprint(
     name='Wooden shield',
-    type=1,
+    slot=1,
     price=100,
     health=0,
     strength=0,
@@ -41,13 +41,11 @@ default_blueprint_shield = Blueprint(
 
 default_weapon = ItemsInGame(
     slot=0,
-    equipped=True,
     blueprint_id=1,
 )
 
 default_shield = ItemsInGame(
     slot=1,
-    equipped=True,
     blueprint_id=2,
 )
 
@@ -57,12 +55,14 @@ default_char = Character(
     health=50,
     level=1,
     experience=0,
+    gold=0,
     strength=5,
     reflex=5,
     charisma=5,
     intelligence=5,
     will=5,
-    image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
+    free_stats=0,
+    image_path='https://char_placeholder.pl/'
 )
 
 

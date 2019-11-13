@@ -17,3 +17,7 @@ class ItemsInGame(db.Model):
 
     def edit(self, char_id=0, blueprint_id=0):
         self.character_id = char_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()

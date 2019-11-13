@@ -5,6 +5,7 @@ class Enemy(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('enemy_name', db.String(35), unique=True, nullable=False)
     experience = db.Column(db.Integer, nullable=False)
+    gold = db.Column(db.Integer, nullable=False)
 
     health = db.Column(db.Integer, nullable=False)
     strength = db.Column(db.Integer, nullable=False)
@@ -23,8 +24,8 @@ class Enemy(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'rarity': self.rarity,
             'experience': self.experience,
+            'gold': self.gold,
             'health': self.health,
             'strength': self.strength,
             'reflex': self.reflex,
@@ -50,6 +51,7 @@ class Enemy(db.Model):
             'min_dmg': self.min_dmg,
             'max_dmg': self.max_dmg,
         }
+
     def save(self):
         db.session.add(self)
         db.session.commit()

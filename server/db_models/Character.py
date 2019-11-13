@@ -16,6 +16,7 @@ class Character(db.Model):
     charisma = db.Column('charisma', db.Integer, nullable=False)
     intelligence = db.Column('intelligence', db.Integer, nullable=False)
     will = db.Column('will', db.Integer, nullable=False)
+    free_stats = db.Column('free_stats', db.Integer, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
     itemsingame = db.relationship('ItemsInGame', backref='character', lazy=True)
@@ -36,6 +37,7 @@ class Character(db.Model):
             'charisma': self.charisma,
             'intelligence': self.intelligence,
             'will': self.will,
+            'free_stats': self.free_stats,
             'user_id': self.user_id,
             'items_in_game': self.itemsingame,
             'image_path': self.image_path
@@ -53,6 +55,22 @@ class Character(db.Model):
             'items_in_game': self.itemsingame,
         }
 
+    def add_stat(self, stat=''):
+        if self.free_stats > 0:
+            if stat == 'strength':
+                self.strength += 1
+            elif stat == 'reflex':
+                self.reflex += 1
+            elif stat == 'charisma':
+                self.charisma += 1
+            elif stat == 'intelligence':
+                self.intelligence += 1
+            elif stat == 'will':
+                self.will += 1
+            return {'success': True, 'increased': stat, 'increased_by': 1}
+        else:
+            return {'success': False, 'message': 'Not enough free stats.'}
+
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
@@ -64,7 +82,8 @@ class Character(db.Model):
         else:
             return cls.query.filter_by(id=id).first()
 
-    def edit(self, char_name=None, user_id=None, health=None, level=None, experience=None, gold=None):
+    def edit(self, char_name=None, user_id=None, health=None, level=None, experience=None, gold=None,
+             free_stats=None):
         if char_name:
             self.name = char_name
         if user_id:
@@ -77,3 +96,5 @@ class Character(db.Model):
             self.experience = experience
         if gold:
             self.gold += gold
+        if free_stats:
+            self.free_stats += free_stats

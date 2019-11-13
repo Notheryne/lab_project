@@ -18,6 +18,15 @@ class User(db.Model):
         self.set_password(password)
         self.create_date = datetime.now()
 
+    def to_dict(self):
+        return {
+            'id': {'value': self.id, 'changeable': False},
+            'email': {'value': self.email, 'changeable': False},
+            'name': {'value': self.name, 'changeable': False},
+            'create_date': {'value': self.create_date, 'changeable': False},
+            'character': {'value': self.character, 'changeable': False},
+        }
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

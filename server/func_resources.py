@@ -44,7 +44,7 @@ def update_level(character, add_experience):
     # for previous level, starting at 100 for lvl 2
     # the changes should be commited to database after using this function
     character_stats = character.to_dict()
-    level = character_stats['level']
+    start_level = character_stats['level']
     experience = character_stats['experience'] + add_experience
     thresholds = [100]
     i = 1
@@ -53,7 +53,8 @@ def update_level(character, add_experience):
         thresholds.append(int(thresholds[i-1] * 1.8))
         i += 1
     level = len(thresholds)
-    character.edit(experience=experience, level=level)
+    free_stats = (level - start_level) * 5
+    character.edit(experience=experience, level=level, free_stats=free_stats)
 
 
 def calc_damage(attacker=None, defender=None):
@@ -142,8 +143,10 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
     attacker_char.edit(health=response['attacker_health'])
     if experience and response['winner']:
         update_level(attacker_char, experience)
+        attacker_char.edit(gold=enemy['gold'])
     elif experience and not response['winner']:
         update_level(attacker_char, int(experience/10))
+        attacker_char.edit(gold=int(enemy['gold'] * 0.4))
 
     db.session.commit()
     return response

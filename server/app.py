@@ -51,47 +51,19 @@ def manage_db():
     db.init_app(app)
     db.drop_all(app=app)
     db.create_all(app=app)
-    enemy1 = Enemy(
-        name='Rat',
-        experience=1500,
-        health=100,
-        strength=1,
-        reflex=2,
-        charisma=2,
-        intelligence=1,
-        will=1,
-        armor=10,
-        min_dmg=1,
-        max_dmg=2,
-        image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
-    )
-
-    enemy2 = Enemy(
-        name='Other Rat',
-        experience=1000,
-        health=50,
-        strength=1,
-        reflex=2,
-        charisma=2,
-        intelligence=1,
-        will=1,
-        armor=10,
-        min_dmg=1,
-        max_dmg=1,
-        image_path='https://pbs.twimg.com/profile_images/600781122688122880/ZZgzd0UC.jpg'
-    )
-
-    enemy1.save()
-    enemy2.save()
     default_blueprint_weapon.save()
     default_blueprint_shield.save()
 
 
-api.add_resource(resources.UserRegistration, '/r')
-api.add_resource(resources.UserLogin, '/l')
-api.add_resource(resources.CharacterFight, '/character_fight')
-api.add_resource(resources.MonsterFight, '/monster_fight')
+api.add_resource(resources.UserRegistration, '/register')
+api.add_resource(resources.UserLogin, '/login')
+api.add_resource(resources.CharacterFight, '/fight/character')
+api.add_resource(resources.MonsterFight, '/fight/monster')
 api.add_resource(resources.ArenaView, '/arena')
+
+api.add_resource(resources.AddBlueprint, '/add/blueprint')
+api.add_resource(resources.AddItem, '/add/item')
+api.add_resource(resources.AddEnemy, '/add/enemy')
 
 
 if __name__ == '__main__':
