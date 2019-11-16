@@ -13,9 +13,10 @@ from server.db_models.Blueprint import Blueprint
 def calculate_stats(char_id, char=None):
     """
 
-    :param char:
+    Return character stats considering related items. Pass Character object or character id.
     :param char_id:
-    :return:
+    :param char:
+    :return: dict
     """
     if not char:
         if isinstance(char_id, str):
@@ -40,9 +41,14 @@ def calculate_stats(char_id, char=None):
 
 
 def update_level(character, add_experience):
-    # every next level requires previous 1,8 * experience
-    # for previous level, starting at 100 for lvl 2
-    # the changes should be commited to database after using this function
+    """
+
+    Add experience to character and calculate if it's enough for next level. If so, add 5 stat
+    points. Each level requires (level - 1)_exp 8 1.8
+    :param character: Character object
+    :param add_experience: amount of experience to add (int)
+    :return: None
+    """
     character_stats = character.to_dict()
     start_level = character_stats['level']
     experience = character_stats['experience'] + add_experience
@@ -58,6 +64,19 @@ def update_level(character, add_experience):
 
 
 def calc_damage(attacker=None, defender=None):
+    """
+
+    Calculate the amount of damage done.
+    damage = x + (0.4 * s + 0.3 * r + 0.2 * i)
+    where:
+    x in [minimum damage, maximum damage]
+    s - strength
+    r - reflex
+    i - intelligence
+    :param attacker: Character or Enemy converted to dict
+    :param defender: Character or Enemy converted to dict
+    :return: tuple
+    """
     damage = (0.4 * attacker['strength']) + (0.3 * attacker['reflex']) + (0.2 * attacker['intelligence'])
     damage += random.randint(attacker['min_dmg'], attacker['max_dmg'])
     dice = random.randint(0, 100)
@@ -79,6 +98,16 @@ def calc_damage(attacker=None, defender=None):
 
 
 def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
+    """
+
+    Simulate a fight based on attacker and deffender stats,
+    return a result with the course of each round
+    :param a_char: Character object
+    :param d_char: Character object
+    :param enemy: Enemy object
+    :param dump_data: True to save data to file (useful for predicting result)
+    :return: dict
+    """
     attacker = calculate_stats(a_char)
     if d_char:
         defender = calculate_stats(d_char)
@@ -153,6 +182,14 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
 
 
 def get_stats_npc(char_id, healer=False, trader=False):
+    """
+
+    Helper for getting stats of char and NPC's text
+    :param char_id: int
+    :param healer: bool
+    :param trader: bool
+    :return: tuple (Character, string)
+    """
     char_id = int(char_id)
     char = Character.find_by_id(char_id, todict=True)
     npc = NonPersonCharacter.query.filter_by(healer=healer, trader=trader).first().to_dict()

@@ -49,36 +49,36 @@ def check_blacklist(decrypted_token):
 @app.before_first_request
 def manage_db():
     db.init_app(app)
-    db.drop_all(app=app)
-    db.create_all(app=app)
-    default_blueprint_weapon.save()
-    default_blueprint_shield.save()
+    # db.drop_all(app=app)
+    # db.create_all(app=app)
+    # default_blueprint_weapon.save()
+    # default_blueprint_shield.save()
 
 
-api.add_resource(resources.UserRegistration, '/register')
-api.add_resource(resources.UserLogin, '/login')
-api.add_resource(resources.UserLogout, '/logout')
-api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
+api.add_resource(resources.UserRegistration, '/api/register')
+api.add_resource(resources.UserLogin, '/api/login')
+api.add_resource(resources.UserLogout, '/api/logout')
+api.add_resource(resources.UserLogoutRefresh, '/api/logout/refresh')
 
-api.add_resource(resources.CharacterFight, '/fight/character')
-api.add_resource(resources.MonsterFight, '/fight/monster')
+api.add_resource(resources.CharacterView, '/api/character')
+api.add_resource(resources.ArenaView, '/api/arena')
+api.add_resource(resources.ExpeditionView, '/api/expedition')
+api.add_resource(resources.HealerView, '/api/npc/healer')
+api.add_resource(resources.TraderView, '/api/npc/trader')
+api.add_resource(resources.AccountManageView, '/api/manage')
 
-api.add_resource(resources.CharacterView, '/character')
-api.add_resource(resources.ArenaView, '/arena')
-api.add_resource(resources.ExpeditionView, '/expedition')
-api.add_resource(resources.HealerView, '/healer')
-api.add_resource(resources.TraderView, '/trader')
-api.add_resource(resources.AccountManageView, '/manage')
+api.add_resource(resources.CharacterFight, '/api/arena/fight')
+api.add_resource(resources.MonsterFight, '/api/expedition/fight')
 
-api.add_resource(resources.HealerHeal, '/healer/heal')
-api.add_resource(resources.TraderBuy, '/trader/buy')
+api.add_resource(resources.HealerHeal, '/api/npc/heal')
+api.add_resource(resources.TraderBuy, '/api/npc/trade')
 
-api.add_resource(resources.AddStat, '/stat/add')
+api.add_resource(resources.AddStat, '/api/add/stats')
 
 
-api.add_resource(resources.AddBlueprint, '/add/blueprint')
-api.add_resource(resources.AddItem, '/add/item')
-api.add_resource(resources.AddEnemy, '/add/enemy')
+api.add_resource(resources.AddItem, '/api/add/item')
+api.add_resource(resources.AddBlueprint, '/api/add/blueprint')
+api.add_resource(resources.AddEnemy, '/api/add/enemy')
 
 
 if __name__ == '__main__':

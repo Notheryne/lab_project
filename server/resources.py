@@ -11,78 +11,100 @@ from server.db_models.NonPersonCharacter import NonPersonCharacter
 from server.db_models.defaults import create_default_character
 from server.func_resources import *
 
-reg_parser = reqparse.RequestParser()
-reg_parser.add_argument('username', help='This field cannot be blank', required=True)
-reg_parser.add_argument('password', help='This field cannot be blank', required=True)
-reg_parser.add_argument('char_name', help='This field cannot be blank', required=True)
-reg_parser.add_argument('email', help='This field cannot be blank', required=True)
 
-log_parser = reqparse.RequestParser()
-log_parser.add_argument('username', help='This field cannot be blank', required=True)
-log_parser.add_argument('password', help='This field cannot be blank', required=True)
+# Initializing parsers of arguments.
 
-fight_parser = reqparse.RequestParser()
-fight_parser.add_argument('attacker_id', help='This field cannot be blank', required=True)
-fight_parser.add_argument('defender_id', help='This field cannot be blank', required=True)
+register_endpoint_parser = reqparse.RequestParser()
+register_endpoint_parser.add_argument('username', help='This field cannot be blank', required=True)
+register_endpoint_parser.add_argument('email', help='This field cannot be blank', required=True)
+register_endpoint_parser.add_argument('char_name', help='This field cannot be blank', required=True)
+register_endpoint_parser.add_argument('password', help='This field cannot be blank', required=True)
 
-trader_parser = reqparse.RequestParser()
-trader_parser.add_argument('bp_id', help='This field cannot be blank', required=True)
+login_endpoint_parser = reqparse.RequestParser()
+login_endpoint_parser.add_argument('username', help='This field cannot be blank', required=True)
+login_endpoint_parser.add_argument('password', help='This field cannot be blank', required=True)
 
-stats_parser = reqparse.RequestParser()
-stats_parser.add_argument('stat', help='This field cannot be blank', required=True)
+fight_endpoint_parser = reqparse.RequestParser()
+fight_endpoint_parser.add_argument('attacker_id', help='This field cannot be blank', required=True)
+fight_endpoint_parser.add_argument('defender_id', help='This field cannot be blank', required=True)
 
+trader_endpoint_parser = reqparse.RequestParser()
+trader_endpoint_parser.add_argument('bp_id', help='This field cannot be blank', required=True)
 
-add_blueprint_parser = reqparse.RequestParser()
-add_blueprint_parser.add_argument('slot', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('name', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('price', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('health', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('strength', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('reflex', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('charisma', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('intelligence', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('will', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('armor', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('min_dmg', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('max_dmg', help='This field cannot be blank', required=True)
-add_blueprint_parser.add_argument('image_path', help='This field cannot be blank', required=True)
+# PARSER TO ADD NEW OBJECTS VIA API
+add_stats_endpoint_parser = reqparse.RequestParser()
+add_stats_endpoint_parser.add_argument('stat', help='This field cannot be blank', required=True)
 
 
-add_item_parser = reqparse.RequestParser()
-add_item_parser.add_argument('blueprint_id', help='This field cannot be blank', required=True)
-add_item_parser.add_argument('character_id', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser = reqparse.RequestParser()
+add_blueprint_endpoint_parser.add_argument('slot', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('name', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('price', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('health', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('strength', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('reflex', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('charisma', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('intelligence', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('will', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('armor', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('min_dmg', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('max_dmg', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('image_path', help='This field cannot be blank', required=True)
 
 
-add_enemy_parser = reqparse.RequestParser()
-add_enemy_parser.add_argument('name', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('experience', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('gold', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('health', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('strength', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('reflex', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('charisma', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('intelligence', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('will', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('armor', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('min_dmg', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('max_dmg', help='This field cannot be blank', required=True)
-add_enemy_parser.add_argument('image_path', help='This field cannot be blank', required=True)
+add_item_endpoint_parser = reqparse.RequestParser()
+add_item_endpoint_parser.add_argument('blueprint_id', help='This field cannot be blank', required=True)
+add_item_endpoint_parser.add_argument('character_id', help='This field cannot be blank', required=True)
+
+
+add_enemy_endpoint_parser = reqparse.RequestParser()
+add_enemy_endpoint_parser.add_argument('name', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('experience', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('gold', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('health', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('strength', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('reflex', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('charisma', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('intelligence', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('will', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('armor', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('min_dmg', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('max_dmg', help='This field cannot be blank', required=True)
+add_enemy_endpoint_parser.add_argument('image_path', help='This field cannot be blank', required=True)
 
 
 # USER MANAGEMENT
 
 
 class UserRegistration(Resource):
+    """
+
+    action: register new user, add new character and starter items to it
+    location: /api/register
+    methods: post
+    return: json with status, message, acces token, refresh token and url to go to
+    """
     def post(self):
-        data = reg_parser.parse_args()
+        data = register_endpoint_parser.parse_args()
         username = data['username']
         char_name = data['char_name']
+
+        if username == '':
+            return {'success': False, 'message': "Field 'Username' can't be empty."}
+
+        if data['email'] == '':
+            return {'success': False, 'message': "Field 'Email' can't be empty."}
+
+        if char_name == '':
+            return {'success': False, 'message': "Field 'Character Name' can't be empty."}
+
+        if data['password'] == '':
+            return {'success': False, 'message': "Field 'Password' can't be empty."}
 
         if User.find_user_by_name(username):
             return {'success': False, 'message': 'User {} already exists.'.format(username)}
 
         if Character.find_by_name(char_name):
-            # print(Character.find_by_name(char_name))
             return {'success': False, 'message': 'Character {} already exists.'.format(char_name)}
 
         if '@' not in data['email'] or '.' not in data['email']:
@@ -104,7 +126,7 @@ class UserRegistration(Resource):
                 'message': 'User {} successfully created.'.format(username),
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'redirect_url': 'localhost:5000'
+                'redirect_url': 'http://localhost:8080/#/'
             }
         except Exception as e:
             print(str(e))
@@ -112,8 +134,15 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
+    """
+
+    action: login user
+    location: /api/login
+    methods: post
+    return: json with status, message, acces token, refresh token and url to go to
+    """
     def post(self):
-        data = log_parser.parse_args()
+        data = login_endpoint_parser.parse_args()
         username = data['username']
         current_user = User.find_user_by_name(username)
 
@@ -127,12 +156,20 @@ class UserLogin(Resource):
                 'message': 'Logged in successfully.',
                 'access_token': access_token,
                 'refresh_token': refresh_token,
+                'redirect_url': 'http://localhost:8080/#/'
             }
         else:
             return {'success': False, 'message': 'Wrong password.'}
 
 
 class UserLogout(Resource):
+    """
+
+    action: logout user (blacklist his access token)
+    location: /api/logout
+    methods: post
+    json with status, message and url to go to
+    """
     @jwt_required
     def post(self):
         jti = get_raw_jwt()['jti']
@@ -149,13 +186,20 @@ class UserLogout(Resource):
 
 
 class UserLogoutRefresh(Resource):
+    """
+
+    action: logout user (blacklist his refresh token)
+    location: /api/logout/refresh
+    methods: post
+    return: json with status and message
+    """
     @jwt_refresh_token_required
     def post(self):
         jti = get_raw_jwt()['jti']
         try:
             revoked_token = RevokedTokenModel(jti=jti)
             revoked_token.add()
-            return {'success': False, 'message': 'Refresh token has been revoked'}
+            return {'success': True, 'message': 'Refresh token has been revoked'}
         except:
             return {'success': False, 'message': 'Something went wrong'}
 
@@ -163,10 +207,17 @@ class UserLogoutRefresh(Resource):
 
 
 class CharacterView(Resource):
+    """
+
+    action: view character stats
+    location: /api/character
+    methods: get
+    return: json with status and all character attributes
+    """
     @jwt_required
     def get(self):
         char = Character.find_by_id(int(get_jwt_identity()), todict=True)
-        items = Character['itemsingame']
+        items = char['itemsingame']
         items = [item.to_dict() for item in items]
         char = calculate_stats(int(get_jwt_identity()))
         if char:
@@ -179,6 +230,13 @@ class CharacterView(Resource):
 
 
 class ArenaView(Resource):
+    """
+
+    action: get random character enemy
+    location: /api/arena
+    methods: get
+    return: json with status and all enemy attributes
+    """
     @jwt_required
     def get(self):
         characters_num = db.session.query(Character).count()
@@ -193,6 +251,13 @@ class ArenaView(Resource):
 
 
 class ExpeditionView(Resource):
+    """
+
+    action: get random enemy
+    location: /api/expedition
+    methods: get
+    return: json with status and all enemy attributes
+    """
     @jwt_required
     def get(self):
         enemies_num = db.session.query(Enemy).count()
@@ -202,6 +267,13 @@ class ExpeditionView(Resource):
 
 
 class HealerView(Resource):
+    """
+
+    action: view healer NPC, healing price
+    location: /api/npc/healer
+    methods: get
+    return: json with status, text and price
+    """
     @jwt_required
     def get(self):
         char, text = get_stats_npc(get_jwt_identity(), healer=True)
@@ -217,6 +289,13 @@ class HealerView(Resource):
 
 
 class TraderView(Resource):
+    """
+
+    action: view trader NPC, items and prices
+    location: /api/npc/trader
+    methods: get
+    return: json with status, text, items attributse and prices
+    """
     @jwt_required
     def get(self):
         char, text = get_stats_npc(get_jwt_identity(), trader=True)
@@ -232,9 +311,17 @@ class TraderView(Resource):
 
 
 class AccountManageView(Resource):
+    """
+
+    action: view possibility of managing user
+    location: /api/manage
+    methods: get
+    return: json with status and all user info except password
+    """
     @jwt_required
     def get(self):
         user = User.query.filter_by(id=int(get_jwt_identity())).to_dict()
+        del user['password_hash']
         response = {'success': True}
         response.update(user)
         return response
@@ -243,16 +330,30 @@ class AccountManageView(Resource):
 # FIGHTS
 
 class CharacterFight(Resource):
+    """
+
+    action: run a fight between identified character and passed enemy character
+    location: /api/arena/fight
+    methods: post
+    return: json with fight course and result
+    """
     @jwt_required
     def post(self):
-        characters = fight_parser.parse_args()
+        characters = fight_endpoint_parser.parse_args()
         return run_fight(int(get_jwt_identity()), d_char=int(characters['defender_id']))
 
 
 class MonsterFight(Resource):
+    """
+
+    action: run a fight between identified character and passed enemy
+    location: /api/expedition/fight
+    methods: post
+    return: json with fight course and result
+    """
     @jwt_required
     def post(self):
-        characters = fight_parser.parse_args()
+        characters = fight_endpoint_parser.parse_args()
         return run_fight(int(get_jwt_identity()), enemy=int(characters['defender_id']))
 
 
@@ -260,8 +361,15 @@ class MonsterFight(Resource):
 
 
 class HealerHeal(Resource):
+    """
+
+    action: make user health his max health
+    location: /api/npc/heal
+    methods: post
+    return: json with status and transaction information, health status
+    """
     @jwt_required
-    def get(self):
+    def post(self):
         char = Character.find_by_id(id=int(get_jwt_identity())).to_dict()
         price = (char['max_health'] + char['health']) * 10
         if char['money'] < price:
@@ -280,10 +388,17 @@ class HealerHeal(Resource):
 
 
 class TraderBuy(Resource):
+    """
+
+    action: add new item to character and remove the old one in slot
+    location: /api/npc/trade
+    methods: post
+    return: json with status, transaction info and character gold status
+    """
     @jwt_required
     def post(self):
         char = Character.find_by_id(id=int(get_jwt_identity())).to_dict()
-        choice = trader_parser.parse_args()['bp_id']
+        choice = trader_endpoint_parser.parse_args()['bp_id']
         item = Blueprint.find_by_id(int(choice)).to_dict()
         if char['money'] < item['price']:
             return {'success': False, 'message': "You don't have enough gold."}
@@ -315,10 +430,17 @@ class TraderBuy(Resource):
 
 
 class AddStat(Resource):
+    """
+
+    action: increase chosen stat
+    location: /add/stats
+    methods:
+    return:
+    """
     @jwt_required
     def post(self):
         char = Character.find_by_id(int(get_jwt_identity()))
-        stat = str(stats_parser.parse_args()['stat'])
+        stat = str(add_stats_endpoint_parser.parse_args()['stat'])
         response = char.add_stat(stat=stat)
         if response['success']:
             db.session.commit()
@@ -332,9 +454,16 @@ class AddStat(Resource):
 
 
 class AddItem(Resource):
+    """
+
+    action: create new item and save it in database
+    location: api/add/item
+    methods: post
+    return: status and item info
+    """
     @jwt_required
     def post(self):
-        data = add_item_parser.parse_args()
+        data = add_item_endpoint_parser.parse_args()
         blueprint = Blueprint.find_by_id(int(data['blueprint_id'])).to_dict()
         new_item = ItemsInGame(
             slot=blueprint['slot'],
@@ -350,9 +479,16 @@ class AddItem(Resource):
 
 
 class AddBlueprint(Resource):
+    """
+
+    action: create new blueprint and save it in database
+    location: api/add/blueprint
+    methods: post
+    return: status and blueprint info
+    """
     @jwt_required
     def post(self):
-        data = add_blueprint_parser.parse_args()
+        data = add_blueprint_endpoint_parser.parse_args()
         new_blueprint = Blueprint(**data)
         new_blueprint.save()
         return {
@@ -362,9 +498,16 @@ class AddBlueprint(Resource):
 
 
 class AddEnemy(Resource):
+    """
+
+    action: create new enemy and save it in database
+    location: api/add/enemy
+    methods: post
+    return: status and enemy info
+    """
     @jwt_required
     def post(self):
-        data = add_enemy_parser.parse_args()
+        data = add_enemy_endpoint_parser.parse_args()
         new_enemy = Enemy(**data)
         new_enemy.save()
         return {
