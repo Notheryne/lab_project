@@ -44,6 +44,8 @@ function sendFormLogin(ev) {
         contentType: 'application/json',
         success: function(msg) {
             if (msg['success'] === true) {
+                window.localStorage.setItem('access_token', msg['access_token']);
+                window.localStorage.setItem('refresh_token', msg['refresh_token']);
                 location.href = msg['redirect_url'];
             } else {
                 let status_label = document.getElementById('server-message');
