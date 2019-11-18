@@ -41,6 +41,10 @@ export default {
       this.getCharacter();
   },
   methods: {
+      getTokens() {
+          const accessToken = window.localStorage.getItem('access_token');
+          const refreshToken = window.localStorage.getItem('refresh_token');
+      }
       getCharacter() {
           axios.get(this.endpoint)
               .then(response => {
