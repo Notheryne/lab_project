@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import Menu from './components/Menu.vue'
 import Character from './components/Character.vue'
 
@@ -33,28 +33,10 @@ export default {
   data () {
     return {
         data: null,
-        endpoint: 'http://127.0.0.1:5000/character/1',
         active_btn: 'char',
+
     }
   },
-  created() {
-      this.getCharacter();
-  },
-  methods: {
-      getTokens() {
-          const accessToken = window.localStorage.getItem('access_token');
-          const refreshToken = window.localStorage.getItem('refresh_token');
-      }
-      getCharacter() {
-          axios.get(this.endpoint)
-              .then(response => {
-                  this.data = response.data;
-              })
-              .catch(error => {
-                  console.log(error);
-              })
-      }
-  }
 }
 </script>
 

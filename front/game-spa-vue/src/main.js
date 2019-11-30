@@ -59,6 +59,20 @@ const router = new Router({
   ]
 });
 
+import axios from 'axios'
+
+const accessToken = window.sessionStorage.getItem('access_token');
+// const refreshToken = window.sessionStorage.getItem('refresh_token');
+console.log(window.sessionStorage);
+Vue.prototype.$test = accessToken;
+const axios_base = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  headers: {'Authorization': 'Bearer '.concat(accessToken)}
+            // 'Content-Type': 'application/json'}
+});
+
+Vue.prototype.$call = axios_base;
+
 new Vue({
   el: '#app',
   router,

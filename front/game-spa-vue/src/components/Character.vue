@@ -7,8 +7,19 @@
 </template>
 
 <script>
-export default {
-    name: 'character',
+  export default {
+      name: 'character',
+
+
+  created(){
+      console.log(this.$test)
+      let character = this.getCharacter();
+  },
+  methods: {
+      getCharacter() {
+          return this.$call.get('/character');
+      }
+  }
 }
 </script>
 

@@ -217,9 +217,11 @@ class CharacterView(Resource):
     @jwt_required
     def get(self):
         char = Character.find_by_id(int(get_jwt_identity()), todict=True)
-        items = char['itemsingame']
+        print(char)
+        items = char['items_in_game']
         items = [item.to_dict() for item in items]
         char = calculate_stats(int(get_jwt_identity()))
+        print(get_jwt_identity())
         if char:
             response = {'success': True}
             response.update(char)

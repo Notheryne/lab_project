@@ -23,21 +23,20 @@ def calculate_stats(char_id, char=None):
             char = Character.query.filter_by(name=char_id).first()
         elif isinstance(char_id, int):
             char = Character.query.filter_by(id=char_id).first()
-    else:
-        char_stats = char.to_dict_stats()
-        items = char_stats.pop('items_in_game')
-        items = [item.to_dict() for item in items]
-        item_stats = []
-        for item in items:
-            stats = Blueprint.query.filter_by(id=item['bp_id']).first().to_dict_stats()
-            item_stats.append(stats)
-        for item in item_stats:
-            for stat, value in item.items():
-                if stat in char_stats.keys():
-                    char_stats[stat] += value
-                else:
-                    char_stats[stat] = value
-        return char_stats
+    char_stats = char.to_dict_stats()
+    items = char_stats.pop('items_in_game')
+    items = [item.to_dict() for item in items]
+    item_stats = []
+    for item in items:
+        stats = Blueprint.query.filter_by(id=item['bp_id']).first().to_dict_stats()
+        item_stats.append(stats)
+    for item in item_stats:
+        for stat, value in item.items():
+            if stat in char_stats.keys():
+                char_stats[stat] += value
+            else:
+                char_stats[stat] = value
+    return char_stats
 
 
 def update_level(character, add_experience):
