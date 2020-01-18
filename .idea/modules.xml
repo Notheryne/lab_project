@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../work/brydzinski-master@539d93f480e/FanpageStats/.idea/FanpageStats.iml" filepath="$PROJECT_DIR$/../work/brydzinski-master@539d93f480e/FanpageStats/.idea/FanpageStats.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/lab_project.iml" filepath="$PROJECT_DIR$/.idea/lab_project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../FrontEnd/.idea/uikit-3.2.7.iml" filepath="$PROJECT_DIR$/../FrontEnd/.idea/uikit-3.2.7.iml" />
     </modules>
   </component>
 </project>

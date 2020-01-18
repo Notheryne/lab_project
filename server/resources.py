@@ -24,6 +24,10 @@ login_endpoint_parser = reqparse.RequestParser()
 login_endpoint_parser.add_argument('username', help='This field cannot be blank', required=True)
 login_endpoint_parser.add_argument('password', help='This field cannot be blank', required=True)
 
+token_validation_parser = reqparse.RequestParser()
+token_validation_parser.add_argument('access_token', help='This field cannot be blank', required=True)
+
+
 fight_endpoint_parser = reqparse.RequestParser()
 fight_endpoint_parser.add_argument('attacker_id', help='This field cannot be blank', required=True)
 fight_endpoint_parser.add_argument('defender_id', help='This field cannot be blank', required=True)
@@ -147,7 +151,10 @@ class UserLogin(Resource):
         current_user = User.find_user_by_name(username)
 
         if not current_user:
-            return {'success': False, 'message': "User {} doesn't exist.".format(username)}
+            if len(username) > 0:
+                return {'success': False, 'message': "User {} doesn't exist.".format(username)}
+            else:
+                return {'success': False, 'message': "Field 'Username' cannot be empty."}
         if current_user.check_password(data['password']):
             access_token = create_access_token(identity=current_user.id)
             refresh_token = create_refresh_token(identity=current_user.id)
@@ -156,10 +163,16 @@ class UserLogin(Resource):
                 'message': 'Logged in successfully.',
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'redirect_url': 'http://localhost:8080/#/'
+                'redirect': '/character'
             }
         else:
             return {'success': False, 'message': 'Wrong password.'}
+
+
+class ValidateToken(Resource):
+    @jwt_required
+    def get(self):
+        return {'valid': True}
 
 
 class UserLogout(Resource):

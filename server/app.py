@@ -27,7 +27,7 @@ app = Flask(__name__)
 api = Api(app)
 # app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://game_admin:#dmiN123@localhost/game'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:#dmiN123@localhost/game'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
@@ -50,16 +50,16 @@ def check_blacklist(decrypted_token):
 def manage_db():
     db.init_app(app)
     # db.drop_all(app=app)
-    # db.create_all(app=app)
-    # default_blueprint_weapon.save()
-    # default_blueprint_shield.save()
+    db.create_all(app=app)
+    default_blueprint_weapon.save()
+    default_blueprint_shield.save()
 
 
 api.add_resource(resources.UserRegistration, '/api/register')
 api.add_resource(resources.UserLogin, '/api/login')
 api.add_resource(resources.UserLogout, '/api/logout')
 api.add_resource(resources.UserLogoutRefresh, '/api/logout/refresh')
-
+api.add_resource(resources.ValidateToken, '/api/validate')
 api.add_resource(resources.CharacterView, '/api/character')
 api.add_resource(resources.ArenaView, '/api/arena')
 api.add_resource(resources.ExpeditionView, '/api/expedition')

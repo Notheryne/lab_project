@@ -4,11 +4,11 @@ import random
 
 def populate(users=10, items=10, blueprints=10, enemies=10):
     basic_url = 'http://localhost:5000/'
-    register_ep = 'register'
-    login_ep = 'login'
-    blueprint_ep = 'add/blueprint'
-    items_ep = 'add/item'
-    enemy_ep = 'add/enemy'
+    register_ep = 'api/register'
+    login_ep = 'api/login'
+    blueprint_ep = 'api/add/blueprint'
+    items_ep = 'api/add/item'
+    enemy_ep = 'api/add/enemy'
 
     # Register
     for i in range(users):
