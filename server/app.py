@@ -55,6 +55,49 @@ app, api = create_app()
 def manage_db():
     # db.drop_all(app=app)
     db.create_all(app=app)
+    healer = NonPersonCharacter(
+        name='Akara',
+        healer=True,
+        trader=False,
+        text1="Welcome back, my friend. We are still clearing."
+              "the monastery, but you're welcome to stay here as long as you need.",
+        text2="Good day. You seem wounded, come and maybe we can fix that.",
+        text3="The Order welcomes you. Do you need healing?",
+        img_path="https://cdnb.artstation.com/p/assets/images/images/014/413/607/large/greg-mack-akara.jpg?1544499463"
+    )
+    trader = NonPersonCharacter(
+        name='Hephaistos',
+        healer=False,
+        trader=True,
+        text1="Welcome back. Do you need a solid piece of armor?",
+        text2="Hi, it's you! I've prepared some special items for my"
+              "favourite customer.",
+        text3="The Order welcomes you. Your armor seems a little worn out, how about a new one?",
+        img_path='http://images6.fanpop.com/image/photos/33400000/Hephaistos-hephaestus-33419337-474-480.jpg'
+    )
+    # import random
+    # i = 0
+    # while i < 50:
+    #     print(i)
+    #     blueprint = Blueprint(**{
+    #         'slot': 3,
+    #         'name': 'Blueprint helmet #{0}'.format(i),
+    #         'price': random.randint(10, 1000),
+    #         'max_health': random.randint(0, 50),
+    #         'strength': random.randint(0, 20),
+    #         'reflex': random.randint(0, 20),
+    #         'charisma': random.randint(0, 20),
+    #         'intelligence': random.randint(0, 20),
+    #         'will': random.randint(0, 20),
+    #         'armor': random.randint(0, 20),
+    #         'min_dmg': random.randint(0, 20),
+    #         'max_dmg': random.randint(20, 40),
+    #         'image_path': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/6/6a/Iron_Hat_inventory_icon.png?version=dd409e0a4ca283e7afbeb5efdf27741e',
+    #     })
+    #     blueprint.save()
+    #     i += 1
+    # healer.save()
+    # trader.save()
     default_blueprint_weapon.save()
     default_blueprint_shield.save()
 
@@ -89,3 +132,23 @@ api.add_resource(resources.AddEnemy, '/api/add/enemy')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# """
+# SELECT * FROM items_in_game
+# WHERE char_id IN (
+#     SELECT id FROM `character`
+#     WHERE id IN (
+#         SELECT DISTINCT u.id
+#         FROM `user` as u
+#         INNER JOIN `character` AS c
+#         ON c.user_id = u.id
+#         INNER JOIN items_in_game AS ig
+#         ON ig.char_id = c.id
+#         INNER JOIN (
+#         SELECT * FROM blueprint
+#             WHERE price > 500
+#         ) AS expensive_bp
+#         ON expensive_bp.id = ig.bp_id
+#     )
+# );
+# """

@@ -57,7 +57,6 @@ def update_level(character, add_experience):
     thresholds = [100]
     i = 1
     while experience >= thresholds[-1]:
-        print('Going', int(thresholds[i-1] * 1.8))
         thresholds.append(int(thresholds[i-1] * 1.8))
         i += 1
     level = len(thresholds)
@@ -128,8 +127,7 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
         health_diff = str(31 - attacker['health'])
         response = {
             'success': False,
-            'message': 'Not enough health to fight.',
-            'additional_info': 'You need {0} more health to fight.'.format(health_diff)
+            'message': 'Not enough health to fight. You need {0} more health to fight.'.format(health_diff)
         }
         return response
 
@@ -145,13 +143,25 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
     def_total_damage = 0
     rounds = 0
     while True:
+        att_health = attacker['health']
+        def_health = defender['health']
         rounds += 1
         att_damage, att_critical, att_dodge = calc_damage(attacker=attacker, defender=defender)
         att_total_damage += att_damage
         def_damage, def_critical, def_dodge = calc_damage(attacker=defender, defender=attacker)
+
+        if att_dodge:
+            def_damage = 0
+        if def_dodge:
+            att_damage = 0
+
         def_total_damage += att_damage
+        att_health -= def_damage
+        def_health -= att_damage
         round_desc = {
             'number': rounds,
+            'attacker_health': att_health,
+            'defender_health': def_health,
             'attacker_damage': att_damage,
             'attacker_critical': att_critical,
             'attacker_dodge': att_dodge,
@@ -174,10 +184,10 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
     attacker_char.edit(health=response['attacker_health'])
     if experience and response['winner']:
         update_level(attacker_char, experience)
-        attacker_char.edit(gold=enemy['gold'])
+        attacker_char.edit(gold=enemy.gold)
     elif experience and not response['winner']:
         update_level(attacker_char, int(experience/10))
-        attacker_char.edit(gold=int(enemy['gold'] * 0.4))
+        attacker_char.edit(gold=int(enemy.gold * 0.4))
 
     db.session.commit()
     return response
@@ -195,4 +205,4 @@ def get_stats_npc(char_id, healer=False, trader=False):
     char_id = int(char_id)
     char = Character.find_by_id(char_id, todict=True)
     npc = NonPersonCharacter.query.filter_by(healer=healer, trader=trader).first().to_dict()
-    return char, npc['texts'][random.randint(0, len(npc['texts']))]
+    return char, npc['texts'][random.randint(0, len(npc['texts']) - 1)], npc['img_path'], npc['name']

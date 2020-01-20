@@ -39,7 +39,8 @@ class Blueprint(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'slot': self.slot,
+            'name': self.name,
+            'slot': self.slots[self.slot],
             'price': self.price,
             'max_health': self.max_health,
             'strength': self.strength,

@@ -9,7 +9,7 @@ class NonPersonCharacter(db.Model):
     text1 = db.Column('text1', db.Text)
     text2 = db.Column('text2', db.Text)
     text3 = db.Column('text3', db.Text)
-    image_path = db.Column('img_path', db.String(256), nullable=False)
+    img_path = db.Column('img_path', db.String(256), nullable=False)
 
     def to_dict(self):
         return {
@@ -18,7 +18,7 @@ class NonPersonCharacter(db.Model):
             'healer': self.healer,
             'trader': self.trader,
             'texts': [self.text1, self.text2, self.text3],
-            'image_path': self.image_path,
+            'img_path': self.img_path,
         }
 
     def save(self):

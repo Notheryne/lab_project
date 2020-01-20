@@ -307,14 +307,17 @@ class HealerView(Resource):
     """
     @jwt_required
     def get(self):
-        char, text = get_stats_npc(get_jwt_identity(), healer=True)
+        char, text, img_path, npc_name = get_stats_npc(get_jwt_identity(), healer=True)
         price = (char['max_health'] - char['health']) * 10
         response = {
             'success': True,
+            'name': npc_name,
+            'img_path': img_path,
             'health': char['health'],
             'max_health': char['max_health'],
             'text': text,
             'price': price,
+            'char_gold': char['gold'],
         }
         return response
 
@@ -325,18 +328,27 @@ class TraderView(Resource):
     action: view trader NPC, items and prices
     location: /api/npc/trader
     methods: get
-    return: json with status, text, items attributse and prices
+    return: json with status, text, items attributes and prices
     """
     @jwt_required
     def get(self):
-        char, text = get_stats_npc(get_jwt_identity(), trader=True)
+        char, text, img_path, npc_name = get_stats_npc(get_jwt_identity(), trader=True)
         blueprints_num = db.session.query(Blueprint).count()
         trader_items = []
+        taken_ids = []
         while len(trader_items) < 6:
-            trader_items.append(Blueprint.find_by_id(random.randint(1, blueprints_num)).to_dict())
-        response = {
+            random_id = random.randint(91, blueprints_num)
+            if random_id not in taken_ids:
+                item = Blueprint.find_by_id(random_id).to_dict()
+                del item['iig']
+                trader_items.append(item)
+                taken_ids.append(random_id)
+        return {
             'success': True,
-            'money': char['money'],
+            'name': npc_name,
+            'img_path': img_path,
+            'gold': char['gold'],
+            'text': text,
             'items': trader_items,
         }
 
@@ -388,7 +400,10 @@ class MonsterFight(Resource):
     @jwt_required
     def post(self):
         characters = fight_endpoint_parser.parse_args()
-        return run_fight(int(get_jwt_identity()), enemy=int(characters['defender_id']))
+        fight = run_fight(int(get_jwt_identity()), enemy=int(characters['defender_id']))
+        if fight['success']:
+            return fight
+        return fight, 400
 
 
 # NPC
@@ -404,20 +419,22 @@ class HealerHeal(Resource):
     """
     @jwt_required
     def post(self):
-        char = Character.find_by_id(id=int(get_jwt_identity())).to_dict()
-        price = (char['max_health'] + char['health']) * 10
-        if char['money'] < price:
+        char = Character.find_by_id(id=int(get_jwt_identity()))
+        price = (char.max_health - char.health) * 10
+        if char.gold < price:
             return {'success': False, 'message': "You don't have enough gold."}, 400
         else:
             char.edit(gold=(price * -1))
-            char.edit(health=char['max_health'])
+            starting_health = char.health
+            char.edit(health=char.max_health)
             db.session.commit()
             return {
                 'success': True,
                 'paid': price,
-                'gold_left': char['money'],
-                'health': char['health'],
-                'max_health': char['max_health'],
+                'gold_left': char.gold,
+                'healed_for': char.max_health - starting_health,
+                'health': char.health,
+                'max_health': char.max_health,
             }
 
 
@@ -431,33 +448,38 @@ class TraderBuy(Resource):
     """
     @jwt_required
     def post(self):
-        char = Character.find_by_id(id=int(get_jwt_identity())).to_dict()
+        char = Character.find_by_id(id=int(get_jwt_identity()))
         choice = trader_endpoint_parser.parse_args()['bp_id']
-        item = Blueprint.find_by_id(int(choice)).to_dict()
-        if char['money'] < item['price']:
+        item = Blueprint.find_by_id(int(choice))
+        if char.gold < item.price:
             return {'success': False, 'message': "You don't have enough gold."}, 400
         else:
-            price = item['price']
-            slot = item['slot']
+            price = item.price
+            slot = item.slot
             to_replace = ItemsInGame.query.filter_by(character_id=int(get_jwt_identity()), slot=slot).first()
-            to_replace_stats = to_replace.to_dict()
-            price -= int(Blueprint.find_by_id(to_replace_stats['bp_id']).to_dict()['price'] * 0.5)
+            if to_replace:
+                to_replace_stats = to_replace.to_dict()
+                db.session.delete(to_replace)
+                refund = Blueprint.find_by_id(to_replace_stats['bp_id'].price)
+                refund = int(int(refund) * 0.5)
+            else:
+                refund = 0
+            price -= refund
             new_item = ItemsInGame(
                 slot=slot,
-                blueprint_id=item['id'],
+                blueprint_id=item.id,
                 character_id=get_jwt_identity(),
             )
             char.edit(gold=(-1 * price))
-            db.session.delete(to_replace)
             db.session.add(new_item)
             db.session.commit()
             return {
                 'success': True,
                 'item': choice,
                 'character': int(get_jwt_identity()),
-                'paid_gold': item['price'],
-                'returned_gold': abs(price-item['price']),
-                'gold_left': char['gold']
+                'paid_gold': item.price,
+                'returned_gold': abs(price-item.price),
+                'gold_left': char.gold
             }
 
 # STATS
