@@ -1,4 +1,4 @@
-from server.db_models.db import db
+from server.db_models.extensions import db
 
 
 # Slots:
@@ -9,13 +9,21 @@ from server.db_models.db import db
 # 4 - amulet
 
 class Blueprint(db.Model):
+    slots = {
+        0: 'weapon',
+        1: 'shield',
+        2: 'armor',
+        3: 'helmet',
+        4: 'amulet',
+    }
+
     id = db.Column('id', db.Integer, primary_key=True)
     slot = db.Column(db.Integer, nullable=False)
 
     name = db.Column('name', db.String(50), nullable=False)
     price = db.Column('price', db.Integer, nullable=False)
 
-    health = db.Column('health', db.Integer, nullable=False)
+    max_health = db.Column('max_health', db.Integer, nullable=False)
     strength = db.Column('strength', db.Integer, nullable=False)
     reflex = db.Column('reflex', db.Integer, nullable=False)
     charisma = db.Column('charisma', db.Integer, nullable=False)
@@ -33,7 +41,7 @@ class Blueprint(db.Model):
             'id': self.id,
             'slot': self.slot,
             'price': self.price,
-            'health': self.health,
+            'max_health': self.max_health,
             'strength': self.strength,
             'reflex': self.reflex,
             'charisma': self.charisma,
@@ -48,7 +56,10 @@ class Blueprint(db.Model):
 
     def to_dict_stats(self):
         return {
-            'health': self.health,
+            'name': self.name,
+            'slot': self.slots[self.slot],
+            'image_path': self.image_path,
+            'max_health': self.max_health,
             'strength': self.strength,
             'reflex': self.reflex,
             'charisma': self.charisma,

@@ -10,6 +10,7 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="module" module-name="FanpageStats" />
     <orderEntry type="module" module-name="uikit-3.2.7" />
+    <orderEntry type="module" module-name="untitled" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_FOLDERS">

@@ -26,14 +26,28 @@ def populate(users=10, items=10, blueprints=10, enemies=10):
 
     headers = {'Authorization': 'Bearer {}'.format(token)}
 
+    images = {
+        'helmet': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/6/6a/Iron_Hat_inventory_icon.png?version=dd409e0a4ca283e7afbeb5efdf27741e',
+        'amulet': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/4/4a/Hexclaw_Talisman_inventory_icon.png?version=b355d1469b25a9690004c781119cf0b3',
+        'armor': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/a/ae/Wild_Leather_inventory_icon.png?version=d2d0f952c8ff390b3a1058a198196dc6',
+        'weapon': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/5/53/Ancient_Sword_inventory_icon.png?version=c72ff92bf2321f1540cb22a61e642fbc',
+        'shield': 'https://gamepedia.cursecdn.com/pathofexile_gamepedia/9/93/Splintered_Tower_Shield_inventory_icon.png?version=6c41b2174e634dae7be68ef72096378b',
+    }
+    slots = {
+        0: 'weapon',
+        1: 'shield',
+        2: 'armor',
+        3: 'helmet',
+        4: 'amulet',
+    }
     # Add random blueprints
     for i in range(blueprints):
-        slot = random.randint(1, 6)
+        slot = random.randint(0, 4)
         data = {
             'slot': slot,
             'name': 'Blueprint ' + str(slot),
             'price': random.randint(10, 1000),
-            'health': random.randint(0, 50),
+            'max_health': random.randint(0, 50),
             'strength': random.randint(0, 20),
             'reflex': random.randint(0, 20),
             'charisma': random.randint(0, 20),
@@ -42,7 +56,7 @@ def populate(users=10, items=10, blueprints=10, enemies=10):
             'armor': random.randint(0, 20),
             'min_dmg': random.randint(0, 20),
             'max_dmg': random.randint(20, 40),
-            'image_path': 'http://img_placeholder.xd',
+            'image_path': images[slots[slot]],
         }
         requests.post(basic_url + blueprint_ep, data=data, headers=headers)
 

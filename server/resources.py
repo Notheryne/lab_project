@@ -29,7 +29,6 @@ token_validation_parser.add_argument('access_token', help='This field cannot be 
 
 
 fight_endpoint_parser = reqparse.RequestParser()
-fight_endpoint_parser.add_argument('attacker_id', help='This field cannot be blank', required=True)
 fight_endpoint_parser.add_argument('defender_id', help='This field cannot be blank', required=True)
 
 trader_endpoint_parser = reqparse.RequestParser()
@@ -44,7 +43,7 @@ add_blueprint_endpoint_parser = reqparse.RequestParser()
 add_blueprint_endpoint_parser.add_argument('slot', help='This field cannot be blank', required=True)
 add_blueprint_endpoint_parser.add_argument('name', help='This field cannot be blank', required=True)
 add_blueprint_endpoint_parser.add_argument('price', help='This field cannot be blank', required=True)
-add_blueprint_endpoint_parser.add_argument('health', help='This field cannot be blank', required=True)
+add_blueprint_endpoint_parser.add_argument('max_health', help='This field cannot be blank', required=True)
 add_blueprint_endpoint_parser.add_argument('strength', help='This field cannot be blank', required=True)
 add_blueprint_endpoint_parser.add_argument('reflex', help='This field cannot be blank', required=True)
 add_blueprint_endpoint_parser.add_argument('charisma', help='This field cannot be blank', required=True)
@@ -130,7 +129,6 @@ class UserRegistration(Resource):
                 'message': 'User {} successfully created.'.format(username),
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'redirect_url': 'http://localhost:8080/#/'
             }
         except Exception as e:
             print(str(e))
@@ -152,9 +150,9 @@ class UserLogin(Resource):
 
         if not current_user:
             if len(username) > 0:
-                return {'success': False, 'message': "User {} doesn't exist.".format(username)}
+                return {'success': False, 'message': "User {} doesn't exist.".format(username)}, 400
             else:
-                return {'success': False, 'message': "Field 'Username' cannot be empty."}
+                return {'success': False, 'message': "Field 'Username' cannot be empty."}, 400
         if current_user.check_password(data['password']):
             access_token = create_access_token(identity=current_user.id)
             refresh_token = create_refresh_token(identity=current_user.id)
@@ -166,13 +164,17 @@ class UserLogin(Resource):
                 'redirect': '/character'
             }
         else:
-            return {'success': False, 'message': 'Wrong password.'}
+            return {'success': False, 'message': 'Wrong password.'}, 400
 
 
-class ValidateToken(Resource):
-    @jwt_required
+class Refresh(Resource):
+    @jwt_refresh_token_required
     def get(self):
-        return {'valid': True}
+        current_user = User.find_user_by_id(get_jwt_identity())
+        return {
+            'access_token': create_access_token(identity=current_user.id),
+            'refresh_token': create_refresh_token(identity=current_user.id)
+        }
 
 
 class UserLogout(Resource):
@@ -188,11 +190,10 @@ class UserLogout(Resource):
         jti = get_raw_jwt()['jti']
         try:
             revoked_token = RevokedTokenModel(jti=jti)
-            revoked_token.add()
+            revoked_token.save()
             return {
                 'success': True,
                 'message': 'Access token revoked.',
-                'goto': 'localhost:5000',
             }
         except:
             return {'message': 'Something went wrong'}, 500
@@ -211,10 +212,10 @@ class UserLogoutRefresh(Resource):
         jti = get_raw_jwt()['jti']
         try:
             revoked_token = RevokedTokenModel(jti=jti)
-            revoked_token.add()
+            revoked_token.save()
             return {'success': True, 'message': 'Refresh token has been revoked'}
         except:
-            return {'success': False, 'message': 'Something went wrong'}
+            return {'success': False, 'message': 'Something went wrong'}, 400
 
 # VIEWS
 
@@ -229,19 +230,26 @@ class CharacterView(Resource):
     """
     @jwt_required
     def get(self):
-        char = Character.find_by_id(int(get_jwt_identity()), todict=True)
-        print(char)
+        char = Character.find_by_id(int(get_jwt_identity()))
+        print(char.to_dict())
+        free_stats = char.free_stats
+        char = char.to_dict()
+        # print(char)
         items = char['items_in_game']
-        items = [item.to_dict() for item in items]
+        items = [item.to_dict()['bp_id'] for item in items]
+        items = [Blueprint.find_by_id(item).to_dict_stats() for item in items]
+        items = {item['slot']: item for item in items}
         char = calculate_stats(int(get_jwt_identity()))
-        print(get_jwt_identity())
+        # print(get_jwt_identity())
         if char:
             response = {'success': True}
             response.update(char)
+            response.update({'free_stats': free_stats})
             response.update({'items': items})
+            print(response)
             return response
         else:
-            return {'success': False, 'message': 'This character does not exist.'}
+            return {'success': False, 'message': 'This character does not exist.'}, 400
 
 
 class ArenaView(Resource):
@@ -258,11 +266,19 @@ class ArenaView(Resource):
         enemy = random.randint(1, characters_num)
         while enemy == get_jwt_identity():
             enemy = random.randint(1, characters_num)
+        enemy_id = int(enemy)
         enemy = Character.find_by_id(enemy, todict=True)
-        enemy_items = enemy.pop('items_in_game')
-        enemy_items = [item.to_dict() for item in enemy_items]
-        enemy.update({'items_in_game': enemy_items})
-        return {'success': True, 'enemy': enemy}
+        items = enemy['items_in_game']
+        items = [item.to_dict()['bp_id'] for item in items]
+        items = [Blueprint.find_by_id(item).to_dict_stats() for item in items]
+        items = {item['slot']: item for item in items}
+        enemy = calculate_stats(enemy['id'])
+        enemy.update({'id': enemy_id})
+        enemy.update({'items': items})
+        return {
+            'success': True,
+            'enemy': enemy
+        }
 
 
 class ExpeditionView(Resource):
@@ -355,7 +371,10 @@ class CharacterFight(Resource):
     @jwt_required
     def post(self):
         characters = fight_endpoint_parser.parse_args()
-        return run_fight(int(get_jwt_identity()), d_char=int(characters['defender_id']))
+        fight = run_fight(int(get_jwt_identity()), d_char=int(characters['defender_id']))
+        if fight['success']:
+            return fight
+        return fight, 400
 
 
 class MonsterFight(Resource):
@@ -388,7 +407,7 @@ class HealerHeal(Resource):
         char = Character.find_by_id(id=int(get_jwt_identity())).to_dict()
         price = (char['max_health'] + char['health']) * 10
         if char['money'] < price:
-            return {'success': False, 'message': "You don't have enough gold."}
+            return {'success': False, 'message': "You don't have enough gold."}, 400
         else:
             char.edit(gold=(price * -1))
             char.edit(health=char['max_health'])
@@ -416,7 +435,7 @@ class TraderBuy(Resource):
         choice = trader_endpoint_parser.parse_args()['bp_id']
         item = Blueprint.find_by_id(int(choice)).to_dict()
         if char['money'] < item['price']:
-            return {'success': False, 'message': "You don't have enough gold."}
+            return {'success': False, 'message': "You don't have enough gold."}, 400
         else:
             price = item['price']
             slot = item['slot']
@@ -455,11 +474,12 @@ class AddStat(Resource):
     @jwt_required
     def post(self):
         char = Character.find_by_id(int(get_jwt_identity()))
-        stat = str(add_stats_endpoint_parser.parse_args()['stat'])
+        stat = add_stats_endpoint_parser.parse_args()['stat']
         response = char.add_stat(stat=stat)
         if response['success']:
-            db.session.commit()
-        return response
+            char.save()
+            return response
+        return response, 400
 
 
 # DATABASE MANAGEMENT
@@ -476,7 +496,7 @@ class AddItem(Resource):
     methods: post
     return: status and item info
     """
-    @jwt_required
+    # @jwt_required
     def post(self):
         data = add_item_endpoint_parser.parse_args()
         blueprint = Blueprint.find_by_id(int(data['blueprint_id'])).to_dict()

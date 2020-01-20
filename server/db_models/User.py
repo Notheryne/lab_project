@@ -1,4 +1,4 @@
-from server.db_models.db import db
+from server.db_models.extensions import db
 
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -36,6 +36,10 @@ class User(db.Model):
     @classmethod
     def find_user_by_name(cls, username):
         return cls.query.filter_by(name=username).first()
+
+    @classmethod
+    def find_user_by_id(cls, user_id):
+        return cls.query.filter_by(id=user_id).first()
 
     def save(self):
         db.session.add(self)

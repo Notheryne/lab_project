@@ -1,4 +1,4 @@
-from server.db_models.db import db
+from server.db_models.extensions import db
 
 
 class Enemy(db.Model):

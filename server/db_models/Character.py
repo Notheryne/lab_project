@@ -1,4 +1,4 @@
-from server.db_models.db import db
+from server.db_models.extensions import db
 
 
 class Character(db.Model):
@@ -67,6 +67,7 @@ class Character(db.Model):
                 self.intelligence += 1
             elif stat == 'will':
                 self.will += 1
+            self.free_stats -= 1
             return {'success': True, 'increased': stat, 'increased_by': 1}
         else:
             return {'success': False, 'message': 'Not enough free stats.'}
@@ -98,3 +99,8 @@ class Character(db.Model):
             self.gold += gold
         if free_stats:
             self.free_stats += free_stats
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+

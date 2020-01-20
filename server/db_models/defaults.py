@@ -1,7 +1,7 @@
 from server.db_models.Character import Character
 from server.db_models.ItemsInGame import ItemsInGame
 from server.db_models.Blueprint import Blueprint
-from server.db_models.db import db
+from server.db_models.extensions import db
 
 from copy import deepcopy
 
@@ -10,7 +10,7 @@ default_blueprint_weapon = Blueprint(
     name='Wooden sword',
     price=100,
     slot=0,
-    health=0,
+    max_health=0,
     strength=0,
     reflex=0,
     charisma=0,
@@ -19,14 +19,14 @@ default_blueprint_weapon = Blueprint(
     armor=0,
     min_dmg=2,
     max_dmg=3,
-    image_path='https://gamepedia.cursecdn.com/arksurvivalevolved_gamepedia/8/89/Sword.png'
+    image_path='https://gamepedia.cursecdn.com/pathofexile_gamepedia/5/53/Ancient_Sword_inventory_icon.png?version=c72ff92bf2321f1540cb22a61e642fbc'
 )
 
 default_blueprint_shield = Blueprint(
     name='Wooden shield',
     slot=1,
     price=100,
-    health=0,
+    max_health=0,
     strength=0,
     reflex=0,
     charisma=0,
@@ -35,7 +35,7 @@ default_blueprint_shield = Blueprint(
     armor=20,
     min_dmg=0,
     max_dmg=0,
-    image_path='https://gamepedia.cursecdn.com/arksurvivalevolved_gamepedia/8/89/Sword.png'
+    image_path='https://gamepedia.cursecdn.com/pathofexile_gamepedia/9/93/Splintered_Tower_Shield_inventory_icon.png?version=6c41b2174e634dae7be68ef72096378b'
 )
 
 
