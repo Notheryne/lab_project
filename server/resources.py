@@ -34,6 +34,10 @@ fight_endpoint_parser.add_argument('defender_id', help='This field cannot be bla
 trader_endpoint_parser = reqparse.RequestParser()
 trader_endpoint_parser.add_argument('bp_id', help='This field cannot be blank', required=True)
 
+change_user_data_parser = reqparse.RequestParser()
+change_user_data_parser.add_argument('stat_name', help='This field cannot be blank', required=True)
+change_user_data_parser.add_argument('value', help='This field cannot be blank', required=True)
+
 # PARSER TO ADD NEW OBJECTS VIA API
 add_stats_endpoint_parser = reqparse.RequestParser()
 add_stats_endpoint_parser.add_argument('stat', help='This field cannot be blank', required=True)
@@ -98,6 +102,9 @@ class UserRegistration(Resource):
         if data['email'] == '':
             return {'success': False, 'message': "Field 'Email' can't be empty."}
 
+        if '@' not in data['email'] or '.' not in data['email']:
+            return {'success': False, 'message': 'Invalid email.'}
+
         if char_name == '':
             return {'success': False, 'message': "Field 'Character Name' can't be empty."}
 
@@ -110,8 +117,7 @@ class UserRegistration(Resource):
         if Character.find_by_name(char_name):
             return {'success': False, 'message': 'Character {} already exists.'.format(char_name)}
 
-        if '@' not in data['email'] or '.' not in data['email']:
-            return {'success': False, 'message': 'Invalid email.'}
+
 
         new_user = User(
             name=username,
@@ -363,8 +369,8 @@ class AccountManageView(Resource):
     """
     @jwt_required
     def get(self):
-        user = User.query.filter_by(id=int(get_jwt_identity())).to_dict()
-        del user['password_hash']
+        user = User.query.filter_by(id=int(get_jwt_identity())).first()
+        user = user.to_dict()
         response = {'success': True}
         response.update(user)
         return response
@@ -460,7 +466,7 @@ class TraderBuy(Resource):
             if to_replace:
                 to_replace_stats = to_replace.to_dict()
                 db.session.delete(to_replace)
-                refund = Blueprint.find_by_id(to_replace_stats['bp_id'].price)
+                refund = Blueprint.find_by_id(to_replace_stats['bp_id']).price
                 refund = int(int(refund) * 0.5)
             else:
                 refund = 0
@@ -505,7 +511,22 @@ class AddStat(Resource):
 
 
 # DATABASE MANAGEMENT
+class AccountManage(Resource):
+    """
 
+    """
+    @jwt_required
+    def post(self):
+        data = change_user_data_parser.parse_args()
+        user = User.find_user_by_id(int(get_jwt_identity()))
+        if data['stat_name'] == 'character_name':
+            char = user.character[0]
+            return char.set_character_name(data['value'])
+        elif data['stat_name'] == 'email':
+            return user.set_email(data['value'])
+        else:
+            print("HERE")
+            return {'success': False, 'message': 'Parameter "stat_name" not recognized.'}, 400
 
 # UserRegistration
 

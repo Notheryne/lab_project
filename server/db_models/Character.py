@@ -1,4 +1,5 @@
 from server.db_models.extensions import db
+from sqlalchemy.exc import IntegrityError
 
 
 class Character(db.Model):
@@ -71,6 +72,18 @@ class Character(db.Model):
             return {'success': True, 'increased': stat, 'increased_by': 1}
         else:
             return {'success': False, 'message': 'Not enough free stats.'}
+
+    def set_character_name(self, new_name):
+        if len(new_name) == 0:
+            return {'success': False, 'message': 'Username cannot be empty.'}
+        elif len(new_name) < 4:
+            return {'success': False, 'message': 'Username too short.'}
+        self.name = new_name
+        try:
+            self.save()
+        except IntegrityError:
+            return {'success': False, 'message': 'This username is already taken.'}, 400
+        return {'success': True, 'message': 'New username set. Remember to login using "{0}".'.format(new_name)}
 
     @classmethod
     def find_by_name(cls, name):

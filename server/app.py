@@ -114,7 +114,7 @@ api.add_resource(resources.ArenaView, '/api/arena')
 api.add_resource(resources.ExpeditionView, '/api/expedition')
 api.add_resource(resources.HealerView, '/api/npc/healer')
 api.add_resource(resources.TraderView, '/api/npc/trader')
-api.add_resource(resources.AccountManageView, '/api/manage')
+api.add_resource(resources.AccountManageView, '/api/account')
 
 api.add_resource(resources.CharacterFight, '/api/arena/fight')
 api.add_resource(resources.MonsterFight, '/api/expedition/fight')
@@ -122,6 +122,7 @@ api.add_resource(resources.MonsterFight, '/api/expedition/fight')
 api.add_resource(resources.HealerHeal, '/api/npc/heal')
 api.add_resource(resources.TraderBuy, '/api/npc/trade')
 
+api.add_resource(resources.AccountManage, '/api/account/manage')
 api.add_resource(resources.AddStat, '/api/add/stats')
 
 
