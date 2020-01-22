@@ -193,7 +193,7 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
     return response
 
 
-def get_stats_npc(char_id, healer=False, trader=False):
+def get_stats_npc(healer=False, trader=False):
     """
 
     Helper for getting stats of char and NPC's text
@@ -202,7 +202,5 @@ def get_stats_npc(char_id, healer=False, trader=False):
     :param trader: bool
     :return: tuple (Character, string)
     """
-    char_id = int(char_id)
-    char = Character.find_by_id(char_id, todict=True)
     npc = NonPersonCharacter.query.filter_by(healer=healer, trader=trader).first().to_dict()
-    return char, npc['texts'][random.randint(0, len(npc['texts']) - 1)], npc['img_path'], npc['name']
+    return npc['texts'][random.randint(0, len(npc['texts']) - 1)], npc['img_path'], npc['name']

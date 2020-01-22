@@ -6,10 +6,10 @@ class NonPersonCharacter(db.Model):
     name = db.Column('npc_name', db.String(35), unique=True, nullable=False)
     healer = db.Column('healer', db.Boolean)
     trader = db.Column('trader', db.Boolean)
-    text1 = db.Column('text1', db.Text)
-    text2 = db.Column('text2', db.Text)
-    text3 = db.Column('text3', db.Text)
-    img_path = db.Column('img_path', db.String(256), nullable=False)
+    text1 = db.Column('text_line1', db.Text)
+    text2 = db.Column('text_line2', db.Text)
+    text3 = db.Column('text_line3', db.Text)
+    img_path = db.Column('image_path', db.String(256), nullable=False)
 
     def to_dict(self):
         return {
@@ -20,6 +20,10 @@ class NonPersonCharacter(db.Model):
             'texts': [self.text1, self.text2, self.text3],
             'img_path': self.img_path,
         }
+
+    @classmethod
+    def find_by_name(cls, npc_name):
+        return cls.query.filter_by(name=npc_name).first()
 
     def save(self):
         db.session.add(self)

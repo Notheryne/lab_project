@@ -4,21 +4,21 @@ from server.db_models.extensions import db
 class Enemy(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('enemy_name', db.String(35), unique=True, nullable=False)
-    experience = db.Column(db.Integer, nullable=False)
-    gold = db.Column(db.Integer, nullable=False)
+    experience = db.Column('experience', db.Integer, nullable=False)
+    gold = db.Column('gold', db.Integer, nullable=False)
 
-    health = db.Column(db.Integer, nullable=False)
-    strength = db.Column(db.Integer, nullable=False)
-    reflex = db.Column(db.Integer, nullable=False)
-    charisma = db.Column(db.Integer, nullable=False)
-    intelligence = db.Column(db.Integer, nullable=False)
-    will = db.Column(db.Integer, nullable=False)
+    health = db.Column('health', db.Integer, nullable=False)
+    strength = db.Column('strength', db.Integer, nullable=False)
+    reflex = db.Column('reflex', db.Integer, nullable=False)
+    charisma = db.Column('charisma', db.Integer, nullable=False)
+    intelligence = db.Column('intelligence', db.Integer, nullable=False)
+    will = db.Column('will', db.Integer, nullable=False)
 
-    armor = db.Column(db.Integer, nullable=False)
-    min_dmg = db.Column(db.Integer, nullable=False)
-    max_dmg = db.Column(db.Integer, nullable=False)
+    armor = db.Column('armor', db.Integer, nullable=False)
+    min_dmg = db.Column('minimal_dmg', db.Integer, nullable=False)
+    max_dmg = db.Column('maximal_dmg', db.Integer, nullable=False)
 
-    image_path = db.Column('img_path', db.String(256), nullable=False)
+    image_path = db.Column('image_path', db.String(256), nullable=False)
 
     def to_dict(self):
         return {

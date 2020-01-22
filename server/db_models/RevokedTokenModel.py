@@ -3,7 +3,7 @@ from server.db_models.extensions import db
 
 class RevokedTokenModel(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
-    jti = db.Column(db.String(120))
+    jti = db.Column('jti', db.String(120))
 
     def save(self):
         db.session.add(self)

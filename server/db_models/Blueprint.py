@@ -18,7 +18,7 @@ class Blueprint(db.Model):
     }
 
     id = db.Column('id', db.Integer, primary_key=True)
-    slot = db.Column(db.Integer, nullable=False)
+    slot = db.Column('slot', db.Integer, nullable=False)
 
     name = db.Column('name', db.String(50), nullable=False)
     price = db.Column('price', db.Integer, nullable=False)
@@ -33,7 +33,7 @@ class Blueprint(db.Model):
     min_dmg = db.Column('min_dmg', db.Integer, nullable=False)
     max_dmg = db.Column('max_dmg', db.Integer, nullable=False)
 
-    image_path = db.Column('img_path', db.String(256), nullable=False)
+    image_path = db.Column('image_path', db.String(256), nullable=False)
     items_in_game = db.relationship('ItemsInGame', backref='blueprint')
 
     def to_dict(self):
@@ -74,6 +74,10 @@ class Blueprint(db.Model):
     @classmethod
     def find_by_id(cls, bp_id):
         return cls.query.filter_by(id=bp_id).first()
+
+    @classmethod
+    def find_by_name(cls, bp_name):
+        return cls.query.filter_by(name=bp_name).first()
 
     def save(self):
         db.session.add(self)

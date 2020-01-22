@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 class Character(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
-    name = db.Column('char_name', db.String(45), unique=True, nullable=False)
+    name = db.Column('character_name', db.String(45), unique=True, nullable=False)
 
     level = db.Column('level', db.Integer, nullable=False)
     experience = db.Column('experience', db.Integer, nullable=False)
@@ -22,7 +22,7 @@ class Character(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
     itemsingame = db.relationship('ItemsInGame', backref='character', lazy=True)
 
-    image_path = db.Column('img_path', db.String(256), nullable=False)
+    image_path = db.Column('image_path', db.String(256), nullable=False)
 
     def to_dict(self):
         return {
@@ -95,6 +95,10 @@ class Character(db.Model):
             return cls.query.filter_by(id=id).first().to_dict()
         else:
             return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def find_by_user_id(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).first()
 
     def edit(self, char_name=None, user_id=None, health=None, level=None, experience=None, gold=None,
              free_stats=None):

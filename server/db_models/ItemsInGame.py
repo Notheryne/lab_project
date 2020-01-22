@@ -4,8 +4,8 @@ from server.db_models.extensions import db
 class ItemsInGame(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     slot = db.Column('slot', db.Integer, nullable=False)
-    blueprint_id = db.Column('bp_id', db.Integer, db.ForeignKey('blueprint.id'))
-    character_id = db.Column('char_id', db.Integer, db.ForeignKey('character.id'))
+    blueprint_id = db.Column('blueprint_id', db.Integer, db.ForeignKey('blueprint.id'))
+    character_id = db.Column('character_id', db.Integer, db.ForeignKey('character.id'))
 
     def to_dict(self):
         return {
