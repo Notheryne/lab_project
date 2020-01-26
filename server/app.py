@@ -1,6 +1,5 @@
-from flask import Flask, jsonify, request, redirect, g, make_response
-from flask_httpauth import HTTPBasicAuth
-from flask_cors import CORS, cross_origin
+from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 from flask_migrate import Migrate
 
@@ -9,21 +8,20 @@ from server.db_models.extensions import db, jwt
 from server.db_models.defaults import default_blueprints, default_npcs
 
 from server.db_models.Blueprint import Blueprint
-from server.db_models.Character import Character
-from server.db_models.Enemy import Enemy
-from server.db_models.ItemsInGame import ItemsInGame
 from server.db_models.NonPersonCharacter import NonPersonCharacter
 from server.db_models.RevokedTokenModel import RevokedTokenModel
-# from server.db_models.User import User
+from server.db_models.Character import Character
+from server.db_models.ItemsInGame import ItemsInGame
 
-# from server.func_resources import *
+from server.db_models.initial_population import populate
+
+
 import server.resources as resources
 
 
 def create_app():
     new_app = Flask(__name__)
     new_api = Api(new_app)
-    # app.config['SQLALCHEMY_ECHO'] = True
     new_app.config['SQLALCHEMY_RECORD_QUERIES'] = True
     new_app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:#dmiN123@localhost/game'
     new_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -43,8 +41,6 @@ def create_app():
     CORS(new_app)
     new_app.config['CORS_HEADERS'] = 'Content-Type'
 
-    # auth = HTTPBasicAuth()
-
     return new_app, new_api
 
 
@@ -54,7 +50,8 @@ migrate = Migrate(app, db)
 
 @app.before_first_request
 def manage_db():
-    # db.drop_all(app=app)
+    if DROP:
+        db.drop_all(app=app)
     db.create_all(app=app)
 
     for npc in default_npcs:
@@ -66,6 +63,13 @@ def manage_db():
         blueprint_in_db = Blueprint.find_by_name(blueprint.name)
         if not blueprint_in_db:
             blueprint.save()
+
+    if POPULATE:
+        users = 0
+        items = 0
+        enemies = 0
+        give_items_to = 600
+        populate(users, items, enemies, give_items_to)
 
 
 api.add_resource(resources.UserRegistration, '/api/register')
@@ -97,23 +101,8 @@ api.add_resource(resources.AddItem, '/api/add/item')
 api.add_resource(resources.AddBlueprint, '/api/add/blueprint')
 api.add_resource(resources.AddEnemy, '/api/add/enemy')
 
+DROP = False
+POPULATE = False
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-"""
-SELECT id FROM `character`
-WHERE id IN (
-    SELECT DISTINCT u.id
-    FROM `user` as u
-    INNER JOIN `character` AS c
-    ON c.user_id = u.id
-    INNER JOIN items_in_game AS ig
-    ON ig.char_id = c.id
-    INNER JOIN (
-    SELECT * FROM blueprint
-        WHERE price > 500
-    ) AS expensive_bp
-    ON expensive_bp.id = ig.bp_id
-);
-"""

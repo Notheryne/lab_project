@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, \
-    jwt_refresh_token_required, get_jwt_identity, get_raw_jwt, jwt_optional
+    jwt_refresh_token_required, get_jwt_identity, get_raw_jwt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import text as text_query
 
@@ -276,6 +276,8 @@ class CharacterView(Resource):
         user = get_current_user()
         char = user.character[0]
         free_stats = char.free_stats
+        gold = char.gold
+        level = char.level
         char = char.to_dict()
         items = char['items_in_game']
         items = [item.to_dict()['bp_id'] for item in items]
@@ -285,8 +287,10 @@ class CharacterView(Resource):
         if char:
             response = {'success': True}
             response.update(char)
-            response.update({'free_stats': free_stats})
-            response.update({'items': items})
+            response['free_stats'] = free_stats
+            response['gold'] = gold
+            response['items'] = items
+            response['level'] = level
             return response
         else:
             return {'success': False, 'message': 'This character does not exist.'}, 400
@@ -305,19 +309,19 @@ class ArenaView(Resource):
     def get(self):
         user = get_current_user()
         char = user.character[0]
-        characters_num = db.session.query(Character).count()
-        enemy = random.randint(1, characters_num)
-        while enemy == char.id:
-            enemy = random.randint(1, characters_num)
-        enemy_id = int(enemy)
-        enemy = Character.find_by_id(enemy, todict=True)
-        items = enemy['items_in_game']
-        items = [item.to_dict()['bp_id'] for item in items]
+        id_lists = db.session.query(Character.id).distinct().filter(Character.id != char.id).all()
+
+        enemy_id = random.randint(0, len(id_lists) - 1)
+        enemy = Character.find_by_id(id_lists[enemy_id][0])
+        enemy_id = enemy.id
+        items = enemy.itemsingame
+        items = [item.blueprint_id for item in items]
         items = [Blueprint.find_by_id(item).to_dict_stats() for item in items]
         items = {item['slot']: item for item in items}
-        enemy = calculate_stats(enemy['id'])
+        enemy = calculate_stats(enemy.id)
         enemy.update({'id': enemy_id})
         enemy.update({'items': items})
+        print(enemy)
         return {
             'success': True,
             'enemy': enemy
@@ -335,10 +339,11 @@ class ExpeditionView(Resource):
 
     @jwt_required
     def get(self):
-        enemies_num = db.session.query(Enemy).count()
-        enemy = random.randint(1, enemies_num)
-        enemy = Enemy.query.filter_by(id=enemy).first().to_dict()
-        return {'success': True, 'enemy': enemy}
+        char = get_current_user().character[0]
+        ids_list = db.session.query(Enemy.id).distinct().all()
+        enemy = random.randint(0, len(ids_list) - 1)
+        enemy = Enemy.query.filter_by(id=ids_list[enemy][0]).first().to_dict()
+        return {'success': True, 'enemy': enemy, 'gold': char.gold, 'level': char.level}
 
 
 class HealerView(Resource):
@@ -355,7 +360,7 @@ class HealerView(Resource):
         user = get_current_user()
         text, img_path, npc_name = get_stats_npc(healer=True)
         char = user.character[0]
-        price = (char.max_health - char.health) * 10
+        price = (char.max_health - char.health) * 10 if char.health < char.max_health else 0
         response = {
             'success': True,
             'name': npc_name,
@@ -364,7 +369,7 @@ class HealerView(Resource):
             'max_health': char.max_health,
             'text': text,
             'price': price,
-            'char_gold': char.gold,
+            'gold': char.gold,
         }
         return response
 
@@ -381,23 +386,22 @@ class TraderView(Resource):
     @jwt_required
     def get(self):
         user = get_current_user()
-        char_id = user.character[0].id
-        char, text, img_path, npc_name = get_stats_npc(char_id, trader=True)
-        blueprints_num = db.session.query(Blueprint).count()
+        text, img_path, npc_name = get_stats_npc(healer=False, trader=True)
+        id_lists = db.session.query(Blueprint.id).distinct().all()
         trader_items = []
         taken_ids = []
         while len(trader_items) < 6:
-            random_id = random.randint(91, blueprints_num)
-            if random_id not in taken_ids:
-                item = Blueprint.find_by_id(random_id).to_dict()
+            random_index = random.randint(0, len(id_lists) - 1)
+            if random_index not in taken_ids:
+                item = Blueprint.find_by_id(id_lists[random_index]).to_dict()
                 del item['iig']
                 trader_items.append(item)
-                taken_ids.append(random_id)
+                taken_ids.append(random_index)
         return {
             'success': True,
             'name': npc_name,
             'img_path': img_path,
-            'gold': char['gold'],
+            'gold': user.character[0].gold,
             'text': text,
             'items': trader_items,
         }
@@ -459,6 +463,7 @@ class MonsterFight(Resource):
         char = user.character[0]
         fight = run_fight(a_char=char.id, enemy=int(defender_id))
         if fight['success']:
+            fight.update({'level': char.level})
             return fight
         return fight, 400
 
@@ -479,7 +484,9 @@ class HealerHeal(Resource):
     def post(self):
         user = get_current_user()
         char = user.character[0]
-        price = (char.max_health - char.health) * 10
+        if char.health > char.max_health:
+            return {'success': False, 'message': "Your health exceeds your maximum health."}, 400
+        price = (char.max_health - char.health) * 10 if char.health < char.max_health else 0
         if char.gold < price:
             return {'success': False, 'message': "You don't have enough gold."}, 400
         else:
@@ -490,7 +497,7 @@ class HealerHeal(Resource):
             return {
                 'success': True,
                 'paid': price,
-                'gold_left': char.gold,
+                'gold': char.gold,
                 'healed_for': char.max_health - starting_health,
                 'health': char.health,
                 'max_health': char.max_health,
@@ -540,7 +547,7 @@ class TraderBuy(Resource):
                 'character': char.id,
                 'paid_gold': item.price,
                 'returned_gold': abs(price - item.price),
-                'gold_left': char.gold
+                'gold': char.gold
             }
 
 
@@ -585,7 +592,7 @@ class Ranking(Resource):
     possible_orders = ['asc', 'desc']
 
     def get(self):
-        results_per_page = 30
+        results_per_page = 10
         characters_num = db.session.query(Character).count()
         max_pages = math.ceil(characters_num / results_per_page)
 
@@ -645,9 +652,9 @@ class Ranking(Resource):
                 the_richest_players.experience, the_richest_players.max_health,
                 the_richest_players.strength, the_richest_players.reflex, the_richest_players.charisma, 
                 the_richest_players.intelligence, the_richest_players.will,
-                u.create_date, the_richest_players.items_value + the_richest_players.money AS total
+                u.create_date, the_richest_players.items_value + the_richest_players.gold AS total
                  FROM (
-                    SELECT SUM(price) AS items_value, c.character_name, c.`level`, c.experience, c.money,
+                    SELECT SUM(price) AS items_value, c.character_name, c.`level`, c.experience, c.gold,
                     c.max_health, c.strength, c.reflex, c.charisma, c.intelligence, c.will, c.user_id AS id
                     FROM items_in_game as iig
                     INNER JOIN blueprint as bp

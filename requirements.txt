@@ -21,3 +21,4 @@ Flask-Cors==3.0.8
 Flask-HTTPAuth==3.3.0
 Flask-JWT-Extended==3.24.1
 Flask-RESTful==0.3.7
+Flask-Migrate==2.5.2

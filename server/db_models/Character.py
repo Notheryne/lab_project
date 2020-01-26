@@ -1,5 +1,6 @@
 from server.db_models.extensions import db
 from sqlalchemy.exc import IntegrityError
+from server.db_models.ItemsInGame import ItemsInGame
 
 
 class Character(db.Model):
@@ -8,7 +9,7 @@ class Character(db.Model):
 
     level = db.Column('level', db.Integer, nullable=False)
     experience = db.Column('experience', db.Integer, nullable=False)
-    gold = db.Column('money', db.Integer, nullable=False)
+    gold = db.Column('gold', db.Integer, nullable=False)
 
     max_health = db.Column('max_health', db.Integer, nullable=False)
     health = db.Column('health', db.Integer, nullable=False)

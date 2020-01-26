@@ -1,8 +1,6 @@
 from server.db_models.Character import Character
-from server.db_models.ItemsInGame import ItemsInGame
 from server.db_models.Blueprint import Blueprint
 from server.db_models.NonPersonCharacter import NonPersonCharacter
-from server.db_models.extensions import db
 
 from copy import deepcopy
 

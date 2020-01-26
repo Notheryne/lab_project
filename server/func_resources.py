@@ -10,6 +10,14 @@ from server.db_models.Enemy import Enemy
 from server.db_models.Blueprint import Blueprint
 
 
+def padding(char_stats):
+    nullable_stats = ['min_dmg', 'max_dmg', 'armor']
+    for stat in nullable_stats:
+        if stat not in char_stats:
+            char_stats[stat] = 0
+    return char_stats
+
+
 def calculate_stats(char_id, char=None):
     """
 
@@ -39,7 +47,7 @@ def calculate_stats(char_id, char=None):
             else:
                 char_stats[stat] = value
     char_stats.update({'name': char.name})
-    return char_stats
+    return padding(char_stats)
 
 
 def update_level(character, add_experience):
@@ -182,13 +190,14 @@ def run_fight(a_char, d_char=None, enemy=None, dump_data=True):
     response['attacker_health'] -= int(0.15 * def_total_damage)
     attacker_char = Character.query.filter_by(id=a_char).first()
     attacker_char.edit(health=response['attacker_health'])
+
     if experience and response['winner']:
         update_level(attacker_char, experience)
         attacker_char.edit(gold=enemy.gold)
     elif experience and not response['winner']:
         update_level(attacker_char, int(experience/10))
         attacker_char.edit(gold=int(enemy.gold * 0.4))
-
+    response['gold'] = attacker_char.gold
     db.session.commit()
     return response
 

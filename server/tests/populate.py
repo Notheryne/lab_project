@@ -10,18 +10,19 @@ def populate(users=10, items=10, blueprints=10, enemies=10):
     items_ep = 'api/add/item'
     enemy_ep = 'api/add/enemy'
 
-    # Register
-    for i in range(users):
-        data = {
-            'username': 'User' + str(i),
-            'password': 123,
-            'email': 'user{}@user.pl'.format(str(i)),
-            'char_name': 'Char' + str(i),
-        }
-        requests.post(basic_url + register_ep, data=data)
-
-    # Get token
-    data = {'username': 'User1', 'password': 123}
+    # # Register
+    # for i in range(users):
+    #     data = {
+    #         'username': 'User' + str(i),
+    #         'password': 123,
+    #         'email': 'user{}@user.pl'.format(str(i)),
+    #         'char_name': 'Char' + str(i),
+    #     }
+    #     requests.post(basic_url + register_ep, data=data)
+    #
+    # # Get token
+    # data = {'username': 'User1', 'password': 123}
+    data = {'username': 'User', 'password': 123}
     token = requests.post(basic_url + login_ep, data=data).json()['access_token']
 
     headers = {'Authorization': 'Bearer {}'.format(token)}
@@ -88,6 +89,5 @@ def populate(users=10, items=10, blueprints=10, enemies=10):
         requests.post(basic_url + enemy_ep, data=data, headers=headers)
 
 
-populate()
 
 
