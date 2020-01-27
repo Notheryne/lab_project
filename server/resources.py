@@ -360,13 +360,14 @@ class HealerView(Resource):
         user = get_current_user()
         text, img_path, npc_name = get_stats_npc(healer=True)
         char = user.character[0]
-        price = (char.max_health - char.health) * 10 if char.health < char.max_health else 0
+        max_health = calculate_stats(char.id)['max_health']
+        price = (max_health - char.health) * 10 if char.health < max_health else 0
         response = {
             'success': True,
             'name': npc_name,
             'img_path': img_path,
             'health': char.health,
-            'max_health': char.max_health,
+            'max_health': max_health,
             'text': text,
             'price': price,
             'gold': char.gold,
@@ -592,7 +593,7 @@ class Ranking(Resource):
     possible_orders = ['asc', 'desc']
 
     def get(self):
-        results_per_page = 10
+        results_per_page = 20
         characters_num = db.session.query(Character).count()
         max_pages = math.ceil(characters_num / results_per_page)
 
