@@ -1,0 +1,13 @@
+.item-description-row {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+.item-image {
+    background-color: #3C2B11;
+}
+
+.item-placeholder-image {
+    filter: grayscale(80%);
+}

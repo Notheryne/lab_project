@@ -1,0 +1,12 @@
+.trader-column {
+    border: 2px groove rgba(12, 7, 15, 0.3);
+}
+
+.trader-item-name {
+    display: block;
+    overflow: hidden;
+    width: 140px;
+    white-space: nowrap;
+    text-transform: capitalize!important;
+    text-align: center!important;
+}

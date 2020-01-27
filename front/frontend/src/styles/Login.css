@@ -1,0 +1,24 @@
+.initial-form {
+    margin: auto;
+    width: 60%;
+}
+
+.server-message {
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+.not-authorized-jumbotron {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 30%;
+}
+
+.logo-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    /*height: 40%;*/
+}
