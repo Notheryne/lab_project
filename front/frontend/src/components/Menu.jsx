@@ -29,7 +29,7 @@ class Menu extends React.Component {
         return (
             <div className={this.props.className}>
                 <Navbar  collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <Navbar.Brand href={"/character"}>Game-Title</Navbar.Brand>
+                    <Navbar.Brand href={"/character"}>Garden and Graves</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav fill className="ml-auto" variant="pills">
